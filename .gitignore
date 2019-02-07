@@ -1,0 +1,8 @@
+# This is gitignore
+.vs/
+WML.sln
+WML/WML.csproj
+WML/App.config
+WML/Properties/
+WML/obj/
+WML/bin/
