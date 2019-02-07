@@ -18,8 +18,7 @@ namespace WML
                 {
                     FileStream WML_code_stream = new FileStream(argvs[0], FileMode.Open);
                     StreamReader WML_code_reader = new StreamReader(WML_code_stream);
-                    string WML_code = WML_code_reader.ReadToEnd();
-                    Token[] tokens = Lexer(WML_code);
+                    Token[] tokens = Lexer(WML_code_reader);
                 }
                 else
                 {
@@ -39,11 +38,11 @@ namespace WML
                                                     "input", "isindex", "keygen", "link", "meta",
                                                     "param", "source", "track", "wbr"};
 
-        static Token[] Lexer(string wml_code)
+        static Token[] Lexer(StreamReader WML_code_reader)
         {
-            foreach (char ch in wml_code)
+            while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
-
+                char ch = (char)WML_code_reader.Read();
             }
         }
     }
