@@ -41,7 +41,10 @@ namespace WML
 
         static Token[] Lexer(string wml_code)
         {
+            foreach (char ch in wml_code)
+            {
 
+            }
         }
     }
 }
