@@ -5,7 +5,23 @@ namespace WML
 {
     class Token
     {
+        int type;
+        int[] value; // array ith 1 element if it is tab and more than 1 if string
 
+        void set_without(int type)
+        {
+            this.type = type;
+        }
+        void set_one(int type, int value)
+        {
+            this.set_without(type);
+            this.value = new int[1] {value};
+        }
+        void set_much(int type, int[] value)
+        {
+            this.set_without(type);
+            this.value = value;
+        }
     }
 
     class Program
