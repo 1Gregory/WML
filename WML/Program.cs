@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace WML
 {
@@ -56,10 +57,14 @@ namespace WML
 
         static Token[] Lexer(StreamReader WML_code_reader)
         {
+            List<Token> tk_list = new List<Token>();
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
                 char ch = (char)WML_code_reader.Read();
+
+                
             }
+            return tk_list.ToArray(); // I created this list just for test
         }
     }
 }

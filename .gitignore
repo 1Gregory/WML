@@ -1,5 +1,6 @@
 # This is gitignore
 .vs/
-WML.sln
 WML/obj/
 WML/bin/
+*.html
+*.wml
