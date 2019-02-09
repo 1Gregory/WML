@@ -9,16 +9,16 @@ namespace WML
         int type;
         int[] value; // array ith 1 element if it is tab and more than 1 if string
 
-        void set_without(int type)
+        public void set_without(int type)
         {
             this.type = type;
         }
-        void set_one(int type, int value)
+        public void set_one(int type, int value)
         {
             this.set_without(type);
             this.value = new int[1] {value};
         }
-        void set_much(int type, int[] value)
+        public void set_much(int type, int[] value)
         {
             this.set_without(type);
             this.value = value;
@@ -39,14 +39,12 @@ namespace WML
                 }
                 else
                 {
-                    Console.WriteLine("    WML can't find this file!\n    To continue press any button...");
-                    Console.ReadKey();
+                    Console.WriteLine("    WML can't find this file!");
                 }
             }
             else
             {
-                Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>\n    To continue press any button...");
-                Console.ReadKey();
+                Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>");
             }
         }
 
@@ -58,10 +56,57 @@ namespace WML
         static Token[] Lexer(StreamReader WML_code_reader)
         {
             List<Token> tk_list = new List<Token>();
+            bool do_we_have_letters = false;
+            int sp_before_letters = 0;
+
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
                 char ch = (char)WML_code_reader.Read();
 
+                if (do_we_have_letters)
+                {
+                    if (ch == '\n')
+                    {
+                        Token new_l_tk = new Token();
+                        new_l_tk.set_without(0); // \n
+                        tk_list.Add(new_l_tk);
+                        do_we_have_letters = false;
+                        sp_before_letters = 0;
+                    }
+                }
+                else
+                {
+                    if (ch == ' ')
+                    {
+                        sp_before_letters++;
+                    }
+                    else if (ch == '\t')
+                    {
+                        sp_before_letters += 4;
+                    }
+                    else if(ch == '\n')
+                    {
+                        //Empty lines skipping
+                        do_we_have_letters = false;
+                        sp_before_letters = 0;
+                    }
+                    else
+                    {
+                        do_we_have_letters = true;
+                        if (sp_before_letters % 4 == 0)
+                        {
+                            Token indent_tk = new Token();
+                            indent_tk.set_one(1, sp_before_letters / 4);
+
+                            //TODO: 
+                        }
+                        else
+                        {
+                            Console.WriteLine("    Syntax Erorr: wrong indent");
+                            throw new Exception();
+                        }
+                    }
+                }
                 
             }
             return tk_list.ToArray(); // I created this list just for test
