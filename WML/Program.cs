@@ -6,6 +6,12 @@ namespace WML
 {
     class Token
     {
+        /*
+         0 - new line
+         1 - indent at start
+         2 - indent at the middle
+             */
+
         int type;
         int[] value; // array ith 1 element if it is tab and more than 1 if string
 
@@ -97,6 +103,7 @@ namespace WML
                         {
                             Token indent_tk = new Token();
                             indent_tk.set_one(1, sp_before_letters / 4);
+                            tk_list.Add(indent_tk);
 
                             //TODO: 
                         }
