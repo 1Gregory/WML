@@ -33,19 +33,24 @@ namespace WML
 
     class Tokenizer
     {
-        string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
+        /*string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
                                                     "col", "command", "embed", "hr", "img",
                                                     "input", "isindex", "keygen", "link", "meta",
-                                                    "param", "source", "track", "wbr"};
+                                                    "param", "source", "track", "wbr"};*/
+
+        private void work_with_symb(char ch)
+        {
+
+        }
+
+        bool do_we_have_letters = false;
+        int sp_before_letters = 0;
+        char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
+        bool one_l_comment = false;
 
         public Token[] Lexer(StreamReader WML_code_reader)
         {
             List<Token> tk_list = new List<Token>();
-            bool do_we_have_letters = false;
-            int sp_before_letters = 0;
-            char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
-            bool one_l_comment = false;
-
 
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
@@ -61,7 +66,10 @@ namespace WML
                         do_we_have_letters = false;
                         sp_before_letters = 0;
                     }
-
+                    else
+                    {
+                        work_with_symb(ch);
+                    }
                 }
                 else
                 {
@@ -75,15 +83,15 @@ namespace WML
                     }
                     else if (ch == '\n')
                     {
-                        //Empty lines skipping
-                        do_we_have_letters = false;
+                        //Empty lines skipping (we don't have letters)
                         sp_before_letters = 0;
-                        if (one_l_comment)
-                        {
-                            one_l_comment = false;
-                        }
+                        one_l_comment = false;
                     }
-                    else if (ch == '/')
+                    else
+                    {
+                        work_with_symb(ch);
+                    }
+                    /*else if (ch == '/')
                     {
                         if (last_ch == '/')
                         {
@@ -110,12 +118,17 @@ namespace WML
                             }
                         }
 
-                    }
+                    }*/
                 }
                 last_ch = ch;
             }
             return tk_list.ToArray(); // I created this list just for test
         }
+    }
+
+    class Peaser
+    {
+        // For future development
     }
 
     class Program
