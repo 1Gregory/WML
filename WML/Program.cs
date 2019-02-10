@@ -31,39 +31,21 @@ namespace WML
         }
     }
 
-    class Program
+    class Tokenizer
     {
-        static void Main(string[] argvs)
-        {
-            if (argvs.Length == 2)
-            {
-                if (File.Exists(argvs[0]))
-                {
-                    FileStream WML_code_stream = new FileStream(argvs[0], FileMode.Open);
-                    StreamReader WML_code_reader = new StreamReader(WML_code_stream);
-                    Token[] tokens = Lexer(WML_code_reader);
-                }
-                else
-                {
-                    Console.WriteLine("    WML can't find this file!");
-                }
-            }
-            else
-            {
-                Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>");
-            }
-        }
-
         string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
                                                     "col", "command", "embed", "hr", "img",
                                                     "input", "isindex", "keygen", "link", "meta",
                                                     "param", "source", "track", "wbr"};
 
-        static Token[] Lexer(StreamReader WML_code_reader)
+        public Token[] Lexer(StreamReader WML_code_reader)
         {
             List<Token> tk_list = new List<Token>();
             bool do_we_have_letters = false;
             int sp_before_letters = 0;
+            char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
+            bool one_l_comment = false;
+
 
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
@@ -79,6 +61,7 @@ namespace WML
                         do_we_have_letters = false;
                         sp_before_letters = 0;
                     }
+
                 }
                 else
                 {
@@ -90,33 +73,73 @@ namespace WML
                     {
                         sp_before_letters += 4;
                     }
-                    else if(ch == '\n')
+                    else if (ch == '\n')
                     {
                         //Empty lines skipping
                         do_we_have_letters = false;
                         sp_before_letters = 0;
+                        if (one_l_comment)
+                        {
+                            one_l_comment = false;
+                        }
+                    }
+                    else if (ch == '/')
+                    {
+                        if (last_ch == '/')
+                        {
+                            one_l_comment = true; // When i adding new char, i need to check this variable
+                        }
                     }
                     else
                     {
-                        do_we_have_letters = true;
-                        if (sp_before_letters % 4 == 0)
+                        if (!one_l_comment)
                         {
-                            Token indent_tk = new Token();
-                            indent_tk.set_one(1, sp_before_letters / 4);
-                            tk_list.Add(indent_tk);
+                            do_we_have_letters = true;
+                            if (sp_before_letters % 4 == 0)
+                            {
+                                Token indent_tk = new Token();
+                                indent_tk.set_one(1, sp_before_letters / 4);
+                                tk_list.Add(indent_tk);
 
-                            //TODO: 
+                                //TODO: 
+                            }
+                            else
+                            {
+                                Console.WriteLine("    Syntax Erorr: wrong indent");
+                                throw new Exception();
+                            }
                         }
-                        else
-                        {
-                            Console.WriteLine("    Syntax Erorr: wrong indent");
-                            throw new Exception();
-                        }
+
                     }
                 }
-                
+                last_ch = ch;
             }
             return tk_list.ToArray(); // I created this list just for test
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] argvs)
+        {
+            if (argvs.Length == 2)
+            {
+                if (File.Exists(argvs[0]))
+                {
+                    FileStream WML_code_stream = new FileStream(argvs[0], FileMode.Open);
+                    StreamReader WML_code_reader = new StreamReader(WML_code_stream);
+                    Tokenizer my_lexer = new Tokenizer();
+                    Token[] tk_arr = my_lexer.Lexer(WML_code_reader);
+                }
+                else
+                {
+                    Console.WriteLine("    WML can't find this file!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>");
+            }
         }
     }
 }
