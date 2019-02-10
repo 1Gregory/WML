@@ -47,6 +47,10 @@ namespace WML
         int sp_before_letters = 0;
         char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
         bool one_l_comment = false;
+        bool in_figure_brackets = false;
+        bool one_quotation_mark = false;
+        bool two_quotation_marks = false;
+        string text = "";
 
         public Token[] Lexer(StreamReader WML_code_reader)
         {
@@ -56,69 +60,99 @@ namespace WML
             {
                 char ch = (char)WML_code_reader.Read();
 
-                if (do_we_have_letters)
+                //There are two ways how to "format" text (in lexer or in parser)
+                if (in_figure_brackets)
                 {
-                    if (ch == '\n')
+                    if (ch == '}')
                     {
-                        Token new_l_tk = new Token();
-                        new_l_tk.set_without(0); // \n
-                        tk_list.Add(new_l_tk);
-                        do_we_have_letters = false;
-                        sp_before_letters = 0;
+                        if (last_ch == '\\')
+                        {
+                            text += '}';
+                        }
+                        else
+                        {
+                            in_figure_brackets = false;
+                        }
                     }
                     else
                     {
-                        work_with_symb(ch);
+                        text += ch;
                     }
+                }
+                else if (two_quotation_marks)
+                {
+
+                }
+                else if (one_quotation_mark)
+                {
+
                 }
                 else
                 {
-                    if (ch == ' ')
+                    if (do_we_have_letters)
                     {
-                        sp_before_letters++;
-                    }
-                    else if (ch == '\t')
-                    {
-                        sp_before_letters += 4;
-                    }
-                    else if (ch == '\n')
-                    {
-                        //Empty lines skipping (we don't have letters)
-                        sp_before_letters = 0;
-                        one_l_comment = false;
-                    }
-                    else
-                    {
-                        work_with_symb(ch);
-                    }
-                    /*else if (ch == '/')
-                    {
-                        if (last_ch == '/')
+                        if (ch == '\n')
                         {
-                            one_l_comment = true; // When i adding new char, i need to check this variable
+                            Token new_l_tk = new Token();
+                            new_l_tk.set_without(0); // \n
+                            tk_list.Add(new_l_tk);
+                            do_we_have_letters = false;
+                            sp_before_letters = 0;
+                        }
+                        else
+                        {
+                            work_with_symb(ch);
                         }
                     }
                     else
                     {
-                        if (!one_l_comment)
+                        if (ch == ' ')
                         {
-                            do_we_have_letters = true;
-                            if (sp_before_letters % 4 == 0)
+                            sp_before_letters++;
+                        }
+                        else if (ch == '\t')
+                        {
+                            sp_before_letters += 4;
+                        }
+                        else if (ch == '\n')
+                        {
+                            //Empty lines skipping (we don't have letters)
+                            sp_before_letters = 0;
+                            one_l_comment = false;
+                        }
+                        else
+                        {
+                            work_with_symb(ch);
+                        }
+                        /*else if (ch == '/')
+                        {
+                            if (last_ch == '/')
                             {
-                                Token indent_tk = new Token();
-                                indent_tk.set_one(1, sp_before_letters / 4);
-                                tk_list.Add(indent_tk);
-
-                                //TODO: 
-                            }
-                            else
-                            {
-                                Console.WriteLine("    Syntax Erorr: wrong indent");
-                                throw new Exception();
+                                one_l_comment = true; // When i adding new char, i need to check this variable
                             }
                         }
+                        else
+                        {
+                            if (!one_l_comment)
+                            {
+                                do_we_have_letters = true;
+                                if (sp_before_letters % 4 == 0)
+                                {
+                                    Token indent_tk = new Token();
+                                    indent_tk.set_one(1, sp_before_letters / 4);
+                                    tk_list.Add(indent_tk);
 
-                    }*/
+                                    //TODO: 
+                                }
+                                else
+                                {
+                                    Console.WriteLine("    Syntax Erorr: wrong indent");
+                                    throw new Exception();
+                                }
+                            }
+
+                        }*/
+                    }
                 }
                 last_ch = ch;
             }
