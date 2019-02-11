@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WML
 {
-    class Token
+    public class Token
     {
         /*
          0 - new line
@@ -15,18 +15,18 @@ namespace WML
         int type;
         int[] value; // array ith 1 element if it is tab and more than 1 if string
 
-        public void set_without(int type)
+        public Token(int type)
         {
             this.type = type;
         }
-        public void set_one(int type, int value)
+        public Token(int type, int value)
         {
-            this.set_without(type);
+            this.type = type;
             this.value = new int[1] {value};
         }
-        public void set_much(int type, int[] value)
+        public Token(int type, int[] value)
         {
-            this.set_without(type);
+            this.type = type;
             this.value = value;
         }
     }
@@ -38,11 +38,12 @@ namespace WML
                                                     "input", "isindex", "keygen", "link", "meta",
                                                     "param", "source", "track", "wbr"};*/
 
-        private void work_with_symb(char ch)
+        private void work_with_symb()
         {
 
         }
 
+        char ch;
         bool do_we_have_letters = false;
         int sp_before_letters = 0;
         char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
@@ -150,7 +151,8 @@ namespace WML
                         }
                         else
                         {
-                            work_with_symb(ch);
+                            tk_list.Add(new Token(1, sp_before_letters));
+                            work_with_symb();
                         }
                         /*else if (ch == '/')
                         {
