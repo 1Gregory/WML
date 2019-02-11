@@ -47,10 +47,51 @@ namespace WML
         int sp_before_letters = 0;
         char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
         bool one_l_comment = false;
-        bool in_figure_brackets = false;
-        bool one_quotation_mark = false;
-        bool two_quotation_marks = false;
+        //in_figure_brackets, one_quotation_mark, two_quotation_marks
+        bool[] indifference = new bool[3] { false, false, false };
         string text = "";
+        bool was_defeated = false;
+
+        private void indifference_check(char ch, char symb, int state)
+        {
+            if (ch == symb)
+            {
+                if (last_ch == '\\')
+                {
+                    if (was_defeated)
+                    {
+                        indifference[state] = false;
+                        was_defeated = false;
+                    }
+                    else
+                    {
+                        text += ch;
+                        was_defeated = false;
+                    }
+                }
+                else
+                {
+                    indifference[state] = false;
+                }
+            }
+            else if (ch == '\\')
+            {
+                if (was_defeated)
+                {
+                    was_defeated = false;
+                }
+                else
+                {
+                    text += '\\';
+                    was_defeated = true;
+                }
+            }
+            else
+            {
+                text += ch;
+                was_defeated = false;
+            }
+        }
 
         public Token[] Lexer(StreamReader WML_code_reader)
         {
@@ -61,37 +102,23 @@ namespace WML
                 char ch = (char)WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
-                if (in_figure_brackets)
+                if (indifference[0])
                 {
-                    if (ch == '}')
-                    {
-                        if (last_ch == '\\')
-                        {
-                            text += '}';
-                        }
-                        else
-                        {
-                            in_figure_brackets = false;
-                        }
-                    }
-                    else
-                    {
-                        text += ch;
-                    }
+                    indifference_check(ch, '}', 0);
                 }
-                else if (two_quotation_marks)
+                else if (indifference[1])
                 {
-
+                    indifference_check(ch, '"', 1);
                 }
-                else if (one_quotation_mark)
+                else if (indifference[2])
                 {
-
+                    indifference_check(ch, '\'', 2);
                 }
                 else
                 {
                     if (do_we_have_letters)
                     {
-                        if (ch == '\n')
+                        /*if (ch == '\n')
                         {
                             Token new_l_tk = new Token();
                             new_l_tk.set_without(0); // \n
@@ -103,6 +130,7 @@ namespace WML
                         {
                             work_with_symb(ch);
                         }
+                        */
                     }
                     else
                     {
@@ -160,8 +188,12 @@ namespace WML
         }
     }
 
-    class Peaser
+    class Parser
     {
+        public void SendToken()
+        {
+
+        }
         // For future development
     }
 
