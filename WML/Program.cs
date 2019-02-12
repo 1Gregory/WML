@@ -125,7 +125,7 @@ namespace WML
                 {
                     one_l_comment = false;
                 }
-                if (indifference[0])
+                else if (indifference[0])
                 {
                     indifference_check(ch, '}', 0);
                 }
@@ -139,71 +139,25 @@ namespace WML
                 }
                 else
                 {
-                    if (do_we_have_letters)
-                    {
-                        /*if (ch == '\n')
-                        {
-                            Token new_l_tk = new Token();
-                            new_l_tk.set_without(0); // \n
-                            tk_list.Add(new_l_tk);
-                            do_we_have_letters = false;
-                            sp_before_letters = 0;
-                        }
-                        else
-                        {
-                            work_with_symb(ch);
-                        }
-                        */
-                    }
-                    else
+                    if (!do_we_have_letters)
                     {
                         if (ch == ' ')
                         {
                             sp_before_letters++;
+                            continue;
                         }
                         else if (ch == '\t')
                         {
                             sp_before_letters += 4;
+                            continue;
                         }
                         else if (ch == '\n')
                         {
                             //Empty lines skipping (we don't have letters)
                             sp_before_letters = 0;
-                            one_l_comment = false;
+                            continue;
                         }
-                        else
-                        {
-                            tk_list.Add(new Token(1, sp_before_letters));
-                            work_with_symb();
-                        }
-                        /*else if (ch == '/')
-                        {
-                            if (last_ch == '/')
-                            {
-                                one_l_comment = true; // When i adding new char, i need to check this variable
-                            }
-                        }
-                        else
-                        {
-                            if (!one_l_comment)
-                            {
-                                do_we_have_letters = true;
-                                if (sp_before_letters % 4 == 0)
-                                {
-                                    Token indent_tk = new Token();
-                                    indent_tk.set_one(1, sp_before_letters / 4);
-                                    tk_list.Add(indent_tk);
-
-                                    //TODO: 
-                                }
-                                else
-                                {
-                                    Console.WriteLine("    Syntax Erorr: wrong indent");
-                                    throw new Exception();
-                                }
-                            }
-
-                        }*/
+                        work_with_symb();
                     }
                 }
                 last_ch = ch;
@@ -226,6 +180,14 @@ namespace WML
 
         }
         // For future development
+    }
+
+    class Composer
+    {
+        public void SendTokens()
+        {
+
+        }
     }
 
     class Program
