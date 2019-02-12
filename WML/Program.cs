@@ -118,9 +118,13 @@ namespace WML
 
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
-                char ch = (char)WML_code_reader.Read();
+                ch = (char)WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
+                if (one_l_comment && ch == '\n')
+                {
+                    one_l_comment = false;
+                }
                 if (indifference[0])
                 {
                     indifference_check(ch, '}', 0);
