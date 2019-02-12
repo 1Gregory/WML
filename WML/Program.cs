@@ -89,7 +89,30 @@ namespace WML
             }
             else
             {
-                text += ch;
+                if (ch == '<')
+                {
+                    text += "&lt";
+                }
+                else if(ch == '>')
+                {
+                    text += "&gt";
+                }
+                else if (ch == '"')
+                {
+                    text += "&quot";
+                }
+                else if (ch == '\'')
+                {
+                    text += "&apos";
+                }
+                else if (ch == '&')
+                {
+                    text += "&amp";
+                }
+                else
+                {
+                    text += ch;
+                }
                 was_defeated = false;
             }
         }
