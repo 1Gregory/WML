@@ -33,11 +33,6 @@ namespace WML
 
     class Tokenizer
     {
-        /*string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
-                                                    "col", "command", "embed", "hr", "img",
-                                                    "input", "isindex", "keygen", "link", "meta",
-                                                    "param", "source", "track", "wbr"};*/
-
         private void work_with_symb()
         {
 
@@ -215,6 +210,13 @@ namespace WML
 
     class Parser
     {
+        string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
+                                                    "col", "command", "embed", "hr", "img",
+                                                    "input", "isindex", "keygen", "link", "meta",
+                                                    "param", "source", "track", "wbr"};
+
+        string[] dont_format = new string[2] {"pre", "code"};
+
         public void SendToken()
         {
 
