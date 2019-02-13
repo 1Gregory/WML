@@ -35,9 +35,38 @@ namespace WML
     {
         private void work_with_symb()
         {
+            if (ch == '\'')
+            {
+                indifference[1] = true;
+            }
+            else if (ch == '"')
+            {
+                indifference[2] = true;
+            }
+            else if (ch == '/')
+            {
+                if (last_ch == '/')
+                {
+                    one_l_comment = true;
+                }
+                return;
+            }
+            else if (ch == '{')
+            {
+                one_l_comment = true;
+            }
+            else if (ch == '=')
+            {
 
+            }
+
+            if (sp_before_letters % 4 == 0)
+            {
+                my_parser.SendToken(new Token(1, sp_before_letters / 4));
+            }
         }
 
+        Parser my_parser = new Parser();
         char ch;
         bool do_we_have_letters = false;
         int sp_before_letters = 0;
@@ -121,7 +150,6 @@ namespace WML
 
         public void Lexer(StreamReader WML_code_reader)
         {
-            List<Token> tk_list = new List<Token>();
 
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
@@ -181,7 +209,7 @@ namespace WML
 
         string[] dont_format = new string[2] {"pre", "code"};
 
-        public void SendToken()
+        public void SendToken(Token tok)
         {
 
         }
