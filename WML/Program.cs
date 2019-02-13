@@ -61,6 +61,10 @@ namespace WML
             {
 
             }
+            else if (ch == '#')
+            {
+
+            }
             else if (ch == '\n')
             {
                 /*if (sp_before_letters % 4 == 0)
@@ -72,6 +76,15 @@ namespace WML
                     Console.WriteLine("    Syntax error: wrong indint");
                 }*/
             }
+            //part with letters
+            else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
+            {
+                text += ch;
+            }
+            else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
+            {
+                text += (char)((int)ch - 32);
+            }
         }
 
         Parser my_parser;
@@ -82,7 +95,7 @@ namespace WML
         bool one_l_comment = false;
         //in_figure_brackets, one_quotation_mark, two_quotation_marks
         bool[] indifference = new bool[3] { false, false, false };
-        string text = "";
+        string text = "";  //TODO: Write a code that cleans the 'text' and SENDS TOKENS TO PARSER!!! BOMBIT!!!!
         bool was_defeated = false;
 
         private void indifference_check(char symb, int state)
