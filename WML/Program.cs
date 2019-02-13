@@ -119,7 +119,7 @@ namespace WML
             }
         }
 
-        public Token[] Lexer(StreamReader WML_code_reader)
+        public void Lexer(StreamReader WML_code_reader)
         {
             List<Token> tk_list = new List<Token>();
 
@@ -169,7 +169,6 @@ namespace WML
                 }
                 last_ch = ch;
             }
-            return tk_list.ToArray(); // I created this list just for test
         }
     }
 
@@ -208,7 +207,7 @@ namespace WML
                     FileStream WML_code_stream = new FileStream(argvs[0], FileMode.Open);
                     StreamReader WML_code_reader = new StreamReader(WML_code_stream);
                     Tokenizer my_lexer = new Tokenizer();
-                    Token[] tk_arr = my_lexer.Lexer(WML_code_reader);
+                    my_lexer.Lexer(WML_code_reader);
                 }
                 else
                 {
