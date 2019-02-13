@@ -59,10 +59,16 @@ namespace WML
             {
 
             }
-
-            if (sp_before_letters % 4 == 0)
+            else if (ch == '\n')
             {
-                my_parser.SendToken(new Token(1, sp_before_letters / 4));
+                if (sp_before_letters % 4 == 0)
+                {
+                    my_parser.SendToken(new Token(1, sp_before_letters / 4));
+                }
+                else
+                {
+                    Console.WriteLine("    Syntax error: wrong indint");
+                }
             }
         }
 
@@ -77,7 +83,7 @@ namespace WML
         string text = "";
         bool was_defeated = false;
 
-        private void indifference_check(char ch, char symb, int state)
+        private void indifference_check(char symb, int state)
         {
             if (ch == symb)
             {
@@ -162,15 +168,15 @@ namespace WML
                 }
                 else if (indifference[0])
                 {
-                    indifference_check(ch, '}', 0);
+                    indifference_check('}', 0);
                 }
                 else if (indifference[1])
                 {
-                    indifference_check(ch, '"', 1);
+                    indifference_check('"', 1);
                 }
                 else if (indifference[2])
                 {
-                    indifference_check(ch, '\'', 2);
+                    indifference_check('\'', 2);
                 }
                 else
                 {
