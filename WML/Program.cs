@@ -102,7 +102,14 @@ namespace WML
                 }
                 else if (ch == '&')
                 {
-                    text += "&amp";
+                    if (last_ch == '\\' && !was_defeated)
+                    {
+                        text += '&';
+                    }
+                    else
+                    {
+                        text += "&amp";
+                    }
                 }
                 else
                 {
