@@ -33,6 +33,8 @@ namespace WML
 
     class Tokenizer
     {
+        static char[] white_spaces = new char[3] {' ', '\t', '\n'};
+
         private void work_with_symb()
         {
             if (ch == '\'')
@@ -61,18 +63,18 @@ namespace WML
             }
             else if (ch == '\n')
             {
-                if (sp_before_letters % 4 == 0)
+                /*if (sp_before_letters % 4 == 0)
                 {
                     my_parser.SendToken(new Token(1, sp_before_letters / 4));
                 }
                 else
                 {
                     Console.WriteLine("    Syntax error: wrong indint");
-                }
+                }*/
             }
         }
 
-        Parser my_parser = new Parser();
+        Parser my_parser;
         char ch;
         bool do_we_have_letters = false;
         int sp_before_letters = 0;
@@ -85,27 +87,7 @@ namespace WML
 
         private void indifference_check(char symb, int state)
         {
-            if (ch == symb)
-            {
-                if (last_ch == '\\')
-                {
-                    if (was_defeated)
-                    {
-                        indifference[state] = false;
-                        was_defeated = false;
-                    }
-                    else
-                    {
-                        text += ch;
-                        was_defeated = false;
-                    }
-                }
-                else
-                {
-                    indifference[state] = false;
-                }
-            }
-            else if (ch == '\\')
+            if (ch == '\\')
             {
                 if (was_defeated)
                 {
@@ -119,7 +101,19 @@ namespace WML
             }
             else
             {
-                if (ch == '<')
+                if (ch == symb)
+                {
+                    if (last_ch != '\\' || was_defeated)
+                    {
+                            indifference[state] = false;
+                            text = "";
+                    }
+                    else
+                    {
+                        text += symb;
+                    }
+                }
+                else if (ch == '<')
                 {
                     text += "&lt";
                 }
@@ -154,9 +148,9 @@ namespace WML
             }
         }
 
-        public void Lexer(StreamReader WML_code_reader)
+        public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
         {
-
+            my_parser = new Parser(HTML_code_writer);
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
                 ch = (char)WML_code_reader.Read();
@@ -208,6 +202,13 @@ namespace WML
 
     class Parser
     {
+        Composer my_composer;
+
+        public Parser(StreamWriter HTML_code_writer)
+        {
+            my_composer = new Composer(HTML_code_writer);
+        }
+
         string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
                                                     "col", "command", "embed", "hr", "img",
                                                     "input", "isindex", "keygen", "link", "meta",
@@ -224,6 +225,10 @@ namespace WML
 
     class Composer
     {
+        public Composer(StreamWriter HTML_code_writer)
+        {
+
+        }
         public void SendTokens()
         {
 
@@ -240,8 +245,10 @@ namespace WML
                 {
                     FileStream WML_code_stream = new FileStream(argvs[0], FileMode.Open);
                     StreamReader WML_code_reader = new StreamReader(WML_code_stream);
+                    FileStream HTML_code_stream = new FileStream(argvs[1], FileMode.OpenOrCreate);
+                    StreamWriter HTML_code_writer = new StreamWriter(HTML_code_stream);
                     Tokenizer my_lexer = new Tokenizer();
-                    my_lexer.Lexer(WML_code_reader);
+                    my_lexer.Lexer(WML_code_reader, HTML_code_writer);
                 }
                 else
                 {
