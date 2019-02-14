@@ -9,7 +9,11 @@ namespace WML
         /*
          0 - new line
          1 - indent at start
-         2 - indent at the middle
+         2 - argv
+         3 - text
+         4 - word
+         5 - =
+         6 - #
              */
 
         int type;
@@ -34,6 +38,11 @@ namespace WML
     class Tokenizer
     {
         static char[] white_spaces = new char[3] {' ', '\t', '\n'};
+         
+        private void SplitWordToken()
+        { // Firstly split (to organize the order of tokens)
+            my_parser.SendToken()
+        }
 
         private void work_with_symb()
         {
@@ -85,6 +94,11 @@ namespace WML
             {
                 text += (char)((int)ch - 32);
             }
+            else
+            {
+                Console.WriteLine("    Syntax error: unknown symbol");
+                throw new Exception();
+            }
         }
 
         Parser my_parser;
@@ -97,6 +111,8 @@ namespace WML
         bool[] indifference = new bool[3] { false, false, false };
         string text = "";  //TODO: Write a code that cleans the 'text' and SENDS TOKENS TO PARSER!!! BOMBIT!!!!
         bool was_defeated = false;
+        bool collecting_word = false;
+        bool was_attr_splited = false;
 
         private void indifference_check(char symb, int state)
         {
