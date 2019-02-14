@@ -28,10 +28,14 @@ namespace WML
             this.type = type;
             this.value = new int[1] {value};
         }
-        public Token(int type, int[] value)
+        public Token(int type, string value) // Not the best solurion :(
         {
             this.type = type;
-            this.value = value;
+            this.value = new int[value.Length];
+            for (int i = 0; i < value.Length; i++)
+            {
+                this.value[i] = value[i]; // Int
+            }
         }
     }
 
@@ -60,7 +64,6 @@ namespace WML
                 {
                     one_l_comment = true;
                 }
-                return;
             }
             else if (ch == '{')
             {
@@ -76,14 +79,7 @@ namespace WML
             }
             else if (ch == '\n')
             {
-                /*if (sp_before_letters % 4 == 0)
-                {
-                    my_parser.SendToken(new Token(1, sp_before_letters / 4));
-                }
-                else
-                {
-                    Console.WriteLine("    Syntax error: wrong indint");
-                }*/
+
             }
             //part with letters
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
@@ -98,6 +94,18 @@ namespace WML
             {
                 Console.WriteLine("    Syntax error: unknown symbol");
                 throw new Exception();
+            }
+
+            if (do_we_have_letters)
+            {
+                if (sp_before_letters % 4 == 0)
+                {
+                    my_parser.SendToken(new Token(1, sp_before_letters / 4));
+                }
+                else
+                {
+                    Console.WriteLine("    Syntax error: wrong indint");
+                }
             }
         }
 
@@ -203,7 +211,11 @@ namespace WML
                 }
                 else
                 {
-                    if (!do_we_have_letters)
+                    if (do_we_have_letters)
+                    {
+                        work_with_symb();
+                    }
+                    else
                     {
                         if (ch == ' ')
                         {
@@ -221,7 +233,10 @@ namespace WML
                             sp_before_letters = 0;
                             continue;
                         }
-                        work_with_symb();
+                        else // A crutch
+                        {
+                            work_with_symb();
+                        }
                     }
                 }
                 last_ch = ch;
