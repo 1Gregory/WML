@@ -91,13 +91,16 @@ namespace WML
             }
             else if (ch == '\n')
             {
+                do_we_have_letters = false;
+                sp_before_letters = 0;
+                SplitWordToken();
                 my_parser.SendToken(new Token(0));
             }
             //part with letters
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
             {
                 text += ch;
-                collecting_word = true;
+                collecting_word = true;  //Not a crutch
             }
             else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
             {
@@ -115,6 +118,7 @@ namespace WML
                 if (sp_before_letters % 4 == 0)
                 {
                     my_parser.SendToken(new Token(1, sp_before_letters / 4));
+                    do_we_have_letters = true;
                 }
                 else
                 {
@@ -241,7 +245,7 @@ namespace WML
                     {
                         one_l_comment = false;
                         sp_before_letters = 0;
-                        my_parser.SendToken(new Token(0));
+                        do_we_have_letters = false;
                     }
                 }
                 else if (indifference[0])
@@ -256,34 +260,28 @@ namespace WML
                 {
                     indifference_check('\'', 2);
                 }
-                else
+
+                else if (do_we_have_letters)
                 {
-                    if (do_we_have_letters)
-                    {
-                        work_with_symb();
-                    }
-                    else
-                    {
-                        if (ch == ' ')
-                        {
-                            sp_before_letters++;
-                            continue;
-                        }
-                        else if (ch == '\t')
-                        {
-                            sp_before_letters += 4;
-                            continue;
-                        }
-                        else if (ch == '\n')
-                        {
-                            //Empty lines skipping (we don't have letters)
-                            sp_before_letters = 0;
-                        }
-                        else // A crutch
-                        {
-                            work_with_symb();
-                        }
-                    }
+                    work_with_symb();
+                }
+
+                else if (ch == ' ')
+                {
+                    sp_before_letters++;
+                }
+                else if (ch == '\t')
+                {
+                    sp_before_letters += 4;
+                }
+                else if (ch == '\n')
+                {
+                    //Empty lines skipping (we don't have letters)
+                    sp_before_letters = 0;
+                }
+                else // A crutch
+                {
+                    work_with_symb();
                 }
                 last_ch = ch;
             }
