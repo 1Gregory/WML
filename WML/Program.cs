@@ -167,6 +167,7 @@ namespace WML
                         else if (was_attr_splited)
                         {
                             my_parser.SendToken(new Token(7, text));
+                            was_attr_splited = false;
                         }
                         else
                         {
