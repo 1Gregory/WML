@@ -160,6 +160,18 @@ namespace WML
                     {
                         // Exit from indifferene is just there
                         indifference[state] = false;
+                        if (ch == '}')
+                        {
+                            my_parser.SendToken(new Token(3, text));
+                        }
+                        else if (was_attr_splited)
+                        {
+                            my_parser.SendToken(new Token(7, text));
+                        }
+                        else
+                        {
+                            my_parser.SendToken(new Token(2, text));
+                        }
                         text = "";
                     }
                     else
