@@ -97,7 +97,7 @@ namespace WML
                 throw new Exception();
             }
 
-            if (do_we_have_letters)
+            if (!do_we_have_letters)
             {
                 if (sp_before_letters % 4 == 0)
                 {
@@ -218,6 +218,7 @@ namespace WML
                     if (ch == '\n')
                     {
                         one_l_comment = false;
+                        sp_before_letters = 0;
                     }
                 }
                 else if (indifference[0])
