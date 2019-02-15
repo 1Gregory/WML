@@ -43,9 +43,10 @@ namespace WML
     {
         static char[] white_spaces = new char[3] {' ', '\t', '\n'};
          
-        private void SplitWordToken()
+        private void EndTextToken()
         { // Firstly split (to organize the order of tokens)
-            my_parser.SendToken()
+            my_parser.SendToken(new Token(4, text));
+            text = "";
         }
 
         private void work_with_symb()
@@ -122,11 +123,16 @@ namespace WML
         bool collecting_word = false;
         bool was_attr_splited = false;
 
-        private void indifference_check(char symb, int state)
+        private void close_the_indifference()
+        {
+
+        }
+
+        private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
             if (ch == '\\')
             {
-                if (was_defeated)
+                if (was_defeated) // Not a crutch!!!
                 {
                     was_defeated = false;
                 }
@@ -177,10 +183,24 @@ namespace WML
                         text += "&amp";
                     }
                 }
-                else
+                else if (Array.Exists(white_spaces, el => el == ch))
                 {
-                    text += ch;
+                    if (symb == '}') // cruuuutch!!!!!!!!
+                    {
+                        if (!Array.Exists(white_spaces, el => el == last_ch))
+                        {
+                            text += ch;
+                        }
+                    }
+                    else
+                    {
+                        was_attr_splited = true;
+                        text += ch;
+                    }
                 }
+                else {
+                    text += ch;
+                }       
                 was_defeated = false;
             }
         }
