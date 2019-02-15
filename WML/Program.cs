@@ -95,6 +95,7 @@ namespace WML
                 sp_before_letters = 0;
                 SplitWordToken();
                 my_parser.SendToken(new Token(0));
+                curs_line++;
             }
             else if (ch == ' ' || ch == '\t')
             {
@@ -115,6 +116,8 @@ namespace WML
             {
                 Console.WriteLine("    Syntax error: unknown symbol");
                 Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
+                Console.WriteLine("    Cursor line: " + Convert.ToString(curs_line));
+                Console.WriteLine("    Cursor position: " + Convert.ToString(cur_pos));
                 throw new Exception();
             }
 
@@ -128,6 +131,8 @@ namespace WML
                 else
                 {
                     Console.WriteLine("    Syntax error: wrong indint");
+                    Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
+                    throw new Exception();
                 }
             }
         }
@@ -145,25 +150,30 @@ namespace WML
         bool collecting_word = false;
         bool was_attr_splited = false;
 
+        int cur_pos = 1; // Debugging
+        int curs_line = 1;
+
         private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
             if (ch == '\\')
             {
                 if (was_defeated) // Not a crutch!!!
                 {
+                    // It means that last char was a back slash
                     was_defeated = false;
                 }
-                else
+                else if (last_ch == '\\')
                 {
                     text += '\\';
                     was_defeated = true;
                 }
+                // In other cases do nothing
             }
             else
             {
                 if (ch == symb)
                 {
-                    if (last_ch != '\\' || was_defeated)
+                    if (last_ch != '\\' || was_defeated) // Maybe it is a crutch (becouse half of variants are irregular), but i don't know a solution
                     {
                         // Exit from indifferene is just there
                         indifference[state] = false;
@@ -241,6 +251,10 @@ namespace WML
             my_parser = new Parser(HTML_code_writer);
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
+                if (cur_pos == 321)
+                {
+                    Console.WriteLine(ch);
+                }
                 ch = (char)WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
@@ -252,6 +266,7 @@ namespace WML
                         one_l_comment = false;
                         sp_before_letters = 0;
                         do_we_have_letters = false;
+                        curs_line++;
                     }
                 }
                 else if (indifference[0])
@@ -284,12 +299,15 @@ namespace WML
                 {
                     //Empty lines skipping (we don't have letters)
                     sp_before_letters = 0;
+                    curs_line++;
                 }
                 else // A crutch
                 {
                     work_with_symb();
                 }
+                Console.Write(ch);
                 last_ch = ch;
+                cur_pos++;
             }
         }
     }
