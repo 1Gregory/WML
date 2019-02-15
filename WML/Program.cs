@@ -193,9 +193,12 @@ namespace WML
                 ch = (char)WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
-                if (one_l_comment && ch == '\n')
+                if (one_l_comment)
                 {
-                    one_l_comment = false;
+                    if (ch == '\n')
+                    {
+                        one_l_comment = false;
+                    }
                 }
                 else if (indifference[0])
                 {
