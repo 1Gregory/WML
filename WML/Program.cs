@@ -9,11 +9,12 @@ namespace WML
         /*
          0 - new line
          1 - indent at start
-         2 - argv
+         2 - attr
          3 - text
          4 - word
          5 - =
          6 - #
+         7 - attr without quotes
              */
 
         int type;
@@ -43,10 +44,13 @@ namespace WML
     {
         static char[] white_spaces = new char[3] {' ', '\t', '\n'};
          
-        private void EndTextToken()
+        private void SplitWordToken()
         { // Firstly split (to organize the order of tokens)
-            my_parser.SendToken(new Token(4, text));
-            text = "";
+            if (collecting_word)
+            {
+                my_parser.SendToken(new Token(4, text));
+                text = "";
+            }
         }
 
         private void work_with_symb()
@@ -54,9 +58,11 @@ namespace WML
             if (ch == '\'')
             {
                 indifference[1] = true;
+                SplitWordToken();
             }
             else if (ch == '"')
             {
+                SplitWordToken();
                 indifference[2] = true;
             }
             else if (ch == '/')
@@ -69,19 +75,22 @@ namespace WML
             }
             else if (ch == '{')
             {
-                one_l_comment = true;
+                indifference[0] = true;
+                SplitWordToken();
             }
             else if (ch == '=')
             {
-
+                SplitWordToken();
+                my_parser.SendToken(new Token(5));
             }
             else if (ch == '#')
             {
-
+                SplitWordToken();
+                my_parser.SendToken(new Token(6));
             }
             else if (ch == '\n')
             {
-
+                my_parser.SendToken(new Token(0));
             }
             //part with letters
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
@@ -149,8 +158,9 @@ namespace WML
                 {
                     if (last_ch != '\\' || was_defeated)
                     {
-                            indifference[state] = false;
-                            text = "";
+                        // Exit from indifferene is just there
+                        indifference[state] = false;
+                        text = "";
                     }
                     else
                     {
@@ -220,6 +230,7 @@ namespace WML
                     {
                         one_l_comment = false;
                         sp_before_letters = 0;
+                        my_parser.SendToken(new Token(0));
                     }
                 }
                 else if (indifference[0])
