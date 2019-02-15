@@ -254,7 +254,6 @@ namespace WML
                         {
                             //Empty lines skipping (we don't have letters)
                             sp_before_letters = 0;
-                            continue;
                         }
                         else // A crutch
                         {
