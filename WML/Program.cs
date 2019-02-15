@@ -114,6 +114,7 @@ namespace WML
             else
             {
                 Console.WriteLine("    Syntax error: unknown symbol");
+                Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
                 throw new Exception();
             }
 
