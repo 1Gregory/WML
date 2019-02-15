@@ -50,6 +50,7 @@ namespace WML
             {
                 my_parser.SendToken(new Token(4, text));
                 text = "";
+                collecting_word = false;
             }
         }
 
@@ -134,11 +135,6 @@ namespace WML
         bool was_defeated = false;
         bool collecting_word = false;
         bool was_attr_splited = false;
-
-        private void close_the_indifference()
-        {
-
-        }
 
         private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
