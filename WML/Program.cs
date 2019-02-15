@@ -248,6 +248,7 @@ namespace WML
                 {
                     if (ch == '\n')
                     {
+                        my_parser.SendToken(new Token(0));
                         one_l_comment = false;
                         sp_before_letters = 0;
                         do_we_have_letters = false;
