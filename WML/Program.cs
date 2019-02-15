@@ -96,10 +96,12 @@ namespace WML
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
             {
                 text += ch;
+                collecting_word = true;
             }
             else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
             {
                 text += (char)((int)ch - 32);
+                collecting_word = true;
             }
             else
             {
