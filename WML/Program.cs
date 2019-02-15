@@ -96,6 +96,10 @@ namespace WML
                 SplitWordToken();
                 my_parser.SendToken(new Token(0));
             }
+            else if (ch == ' ' || ch == '\t')
+            {
+                SplitWordToken();
+            }
             //part with letters
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
             {
