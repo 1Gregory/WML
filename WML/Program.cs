@@ -65,6 +65,7 @@ namespace WML
                 {
                     one_l_comment = true;
                 }
+                return;
             }
             else if (ch == '{')
             {
@@ -276,12 +277,12 @@ namespace WML
             my_composer = new Composer(HTML_code_writer);
         }
 
-        string[] dont_close_them = new string[19] {"area", "base", "basefont", "bgsound", "br",
+        string[] dont_close_them = {"area", "base", "basefont", "bgsound", "br",
                                                     "col", "command", "embed", "hr", "img",
                                                     "input", "isindex", "keygen", "link", "meta",
                                                     "param", "source", "track", "wbr"};
 
-        string[] dont_format = new string[2] {"pre", "code"};
+        string[] dont_format = {"pre", "code"};
 
         public void SendToken(Token tok)
         {
