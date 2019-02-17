@@ -164,6 +164,7 @@ namespace WML
                 }
                 else if (last_ch == '\\')
                 {
+                    // was_defeated = false
                     text += '\\';
                     was_defeated = true;
                 }
@@ -235,6 +236,7 @@ namespace WML
                     }
                     else
                     {
+                        // I don't know compress attributes or not
                         was_attr_splited = true;
                         text += ch;
                     }
@@ -251,10 +253,6 @@ namespace WML
             my_parser = new Parser(HTML_code_writer);
             while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
-                if (cur_pos == 321)
-                {
-                    Console.WriteLine(ch);
-                }
                 ch = (char)WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
