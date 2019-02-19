@@ -18,7 +18,8 @@ namespace WML
              */
 
         int type;
-        int[] value; // array ith 1 element if it is tab and more than 1 if string
+        int value; // array ith 1 element if it is tab and more than 1 if string
+        string value_2;
 
         public Token(int type)
         {
@@ -27,16 +28,12 @@ namespace WML
         public Token(int type, int value)
         {
             this.type = type;
-            this.value = new int[1] {value};
+            this.value = value;
         }
         public Token(int type, string value) // Not the best solurion :(
         {
             this.type = type;
-            this.value = new int[value.Length];
-            for (int i = 0; i < value.Length; i++)
-            {
-                this.value[i] = value[i]; // Int
-            }
+            this.value_2 = value;
         }
     }
 
