@@ -306,6 +306,7 @@ namespace WML
                 last_ch = ch;
                 cur_pos++;
             }
+            SplitWordToken(); // eto norma (no ne fact chto rabotaet(()
         }
     }
 
