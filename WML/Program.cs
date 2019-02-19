@@ -7,14 +7,14 @@ namespace WML
     public class Token
     {
         /*
-         0 - new line
-         1 - indent at start
-         2 - attr
-         3 - text
-         4 - word
-         5 - =
-         6 - #
-         7 - attr without quotes
+         0 - new line (1)
+         1 - indent at start (2)     
+         2 - attr (3)
+         3 - text (3)
+         4 - word (3)
+         5 - = (1)
+         6 - # (1)
+         7 - attr without quotes (3)
              */
 
         int type;
