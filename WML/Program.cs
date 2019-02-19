@@ -17,9 +17,9 @@ namespace WML
          7 - attr without quotes (3)
              */
 
-        int type;
-        int value; // array ith 1 element if it is tab and more than 1 if string
-        string value_2;
+        public int type;
+        public int value;
+        public string value_2;
 
         public Token(int type)
         {
@@ -30,7 +30,7 @@ namespace WML
             this.type = type;
             this.value = value;
         }
-        public Token(int type, string value) // Not the best solurion :(
+        public Token(int type, string value)
         {
             this.type = type;
             this.value_2 = value;
@@ -321,11 +321,23 @@ namespace WML
                                                     "input", "isindex", "keygen", "link", "meta",
                                                     "param", "source", "track", "wbr"};
 
-        string[] dont_format = {"pre", "code"};
+        string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
 
-        public void SendToken(Token tok)
+        public bool[] SendToken(Token tok)
         {
-
+            if (tok.type == 1)
+            {
+                Console.WriteLine("type: 1, value: " + Convert.ToString(tok.value));
+            }
+            else if (tok.type == 0 || tok.type == 5 || tok.type == 6)
+            {
+                Console.WriteLine("type: " + Convert.ToString(tok.type));
+            }
+            else
+            {
+                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", " + Convert.ToString(tok.value_2));
+            }
+            return new bool[]{false};
         }
         // For future development
     }
