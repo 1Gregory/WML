@@ -303,7 +303,6 @@ namespace WML
                 {
                     work_with_symb();
                 }
-                Console.Write(ch);
                 last_ch = ch;
                 cur_pos++;
             }
