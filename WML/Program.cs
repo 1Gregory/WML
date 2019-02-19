@@ -232,7 +232,7 @@ namespace WML
                         text += "&amp";
                     }
                 }
-                else if (Array.Exists(white_spaces, el => el == ch))
+                else if (Array.Exists(white_spaces, el => el == ch) && need_formating_text)
                 {
                     if (symb == '}') // cruuuutch!!!!!!!!
                     {
