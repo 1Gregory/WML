@@ -134,6 +134,15 @@ namespace WML
             }
         }
 
+        void Send_Token(Token tok)
+        {
+            bool[] res = my_parser.SendToken(tok);
+            if (res[0])
+            {
+                need_formating_text = !need_formating_text;
+            }
+        }
+
         Parser my_parser;
         char ch;
         bool do_we_have_letters = false;
@@ -146,6 +155,7 @@ namespace WML
         bool was_defeated = false;
         bool collecting_word = false;
         bool was_attr_splited = false;
+        bool need_formating_text = true;
 
         int cur_pos = 1; // Debugging
         int curs_line = 1;
