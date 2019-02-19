@@ -45,7 +45,7 @@ namespace WML
         { // Firstly split (to organize the order of tokens)
             if (collecting_word)
             {
-                my_parser.SendToken(new Token(4, text));
+                Send_Token(new Token(4, text));
                 text = "";
                 collecting_word = false;
             }
@@ -79,19 +79,19 @@ namespace WML
             else if (ch == '=')
             {
                 SplitWordToken();
-                my_parser.SendToken(new Token(5));
+                Send_Token(new Token(5));
             }
             else if (ch == '#')
             {
                 SplitWordToken();
-                my_parser.SendToken(new Token(6));
+                Send_Token(new Token(6));
             }
             else if (ch == '\n')
             {
                 do_we_have_letters = false;
                 sp_before_letters = 0;
                 SplitWordToken();
-                my_parser.SendToken(new Token(0));
+                Send_Token(new Token(0));
                 curs_line++;
             }
             else if (ch == ' ' || ch == '\t')
@@ -122,7 +122,7 @@ namespace WML
             {
                 if (sp_before_letters % 4 == 0)
                 {
-                    my_parser.SendToken(new Token(1, sp_before_letters / 4));
+                    Send_Token(new Token(1, sp_before_letters / 4));
                     do_we_have_letters = true;
                 }
                 else
@@ -187,16 +187,16 @@ namespace WML
                         indifference[state] = false;
                         if (ch == '}')
                         {
-                            my_parser.SendToken(new Token(3, text));
+                            Send_Token(new Token(3, text));
                         }
                         else if (was_attr_splited)
                         {
-                            my_parser.SendToken(new Token(7, text));
+                            Send_Token(new Token(7, text));
                             was_attr_splited = false;
                         }
                         else
                         {
-                            my_parser.SendToken(new Token(2, text));
+                            Send_Token(new Token(2, text));
                         }
                         text = "";
                     }
@@ -267,7 +267,7 @@ namespace WML
                 {
                     if (ch == '\n')
                     {
-                        my_parser.SendToken(new Token(0));
+                        Send_Token(new Token(0));
                         one_l_comment = false;
                         sp_before_letters = 0;
                         do_we_have_letters = false;
