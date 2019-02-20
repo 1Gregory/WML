@@ -54,7 +54,7 @@ namespace WML
         bool was_attr_splited = false;
         bool need_formating_text = true;
 
-        static char[] white_spaces = new char[3] {' ', '\t', '\n'};
+        static char[] white_spaces = new char[4] {' ', '\t', '\n', '\r'};
 
         public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
         {
