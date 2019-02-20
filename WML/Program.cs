@@ -269,7 +269,16 @@ namespace WML
                     }
                     else
                     {
-                        text += symb;
+                        // Maybe it is not a good soluton but
+                        if (symb == '"')
+                        {
+                            text += "&quot";
+                        }
+                        else if (symb == '\'')
+                        {
+                            text += "&apos";
+                        }
+                        text += '}';
                     }
                 }
                 else if (ch == '<')
