@@ -336,7 +336,7 @@ namespace WML
             {
                 Console.WriteLine("type: 1, value: " + Convert.ToString(tok.value));
             }
-            else if (tok.type == 0 || tok.type == 5 || tok.type == 6)
+            else if (tok.type == 0 || tok.type == 5 || tok.type == 6 || tok.type == 8)
             {
                 Console.WriteLine("type: " + Convert.ToString(tok.type));
             }
