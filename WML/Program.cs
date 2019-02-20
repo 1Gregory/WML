@@ -92,7 +92,6 @@ namespace WML
                 sp_before_letters = 0;
                 SplitWordToken();
                 Send_Token(new Token(0));
-                curs_line++;
                 return; // Maybe it is a crutch but it should fix the bug
             }
             else if (ch == ' ' || ch == '\t')
@@ -114,8 +113,6 @@ namespace WML
             {
                 Console.WriteLine("    Syntax error: unknown symbol");
                 Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
-                Console.WriteLine("    Cursor line: " + Convert.ToString(curs_line));
-                Console.WriteLine("    Cursor position: " + Convert.ToString(cur_pos));
                 throw new Exception();
             }
 
@@ -157,9 +154,6 @@ namespace WML
         bool collecting_word = false;
         bool was_attr_splited = false;
         bool need_formating_text = true;
-
-        int cur_pos = 1; // Debugging
-        int curs_line = 1;
 
         private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
@@ -272,7 +266,6 @@ namespace WML
                         one_l_comment = false;
                         sp_before_letters = 0;
                         do_we_have_letters = false;
-                        curs_line++;
                     }
                 }
                 else if (indifference[0])
@@ -306,14 +299,12 @@ namespace WML
                 {
                     //Empty lines skipping (we don't have letters)
                     sp_before_letters = 0;
-                    curs_line++;
                 }
                 else // A crutch
                 {
                     work_with_symb();
                 }
                 last_ch = ch;
-                cur_pos++;
             }
             SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
             P.S.: eto rabotaet no yavno ne norma
