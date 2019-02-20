@@ -108,6 +108,9 @@ namespace WML
             {
                 text += (char)((int)ch - 32);
                 collecting_word = true;
+            } else if (ch == '\r')
+            {
+
             }
             else
             {
