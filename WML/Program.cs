@@ -93,6 +93,7 @@ namespace WML
                 SplitWordToken();
                 Send_Token(new Token(0));
                 curs_line++;
+                return; // Maybe it is a crutch but it should fix the bug
             }
             else if (ch == ' ' || ch == '\t')
             {
@@ -314,7 +315,9 @@ namespace WML
                 last_ch = ch;
                 cur_pos++;
             }
-            SplitWordToken(); // eto norma (no ne fact chto rabotaet(()
+            SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
+            P.S.: eto rabotaet no yavno ne norma
+            */
         }
     }
 
