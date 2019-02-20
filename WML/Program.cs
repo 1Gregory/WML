@@ -40,34 +40,82 @@ namespace WML
 
     class Tokenizer
     {
-        static char[] white_spaces = new char[3] {' ', '\t', '\n'};
-         
-        private void SplitWordToken()
-        { // Firstly split (to organize the order of tokens)
-            if (collecting_word)
-            {
-                Send_Token(new Token(4, text));
-                text = "";
-                collecting_word = false;
-            }
-        }
+        Parser my_parser;
+        char ch;
+        bool do_we_have_letters = false;
+        int sp_before_letters = 0;
+        char last_ch;
+        bool one_l_comment = false;
+        //in_figure_brackets, one_quotation_mark, two_quotation_marks
+        bool[] indifference = new bool[3] { false, false, false };
+        string text = "";
+        bool was_defeated = false;
+        bool collecting_word = false;
+        bool was_attr_splited = false;
+        bool need_formating_text = true;
 
-        private void Quartering()
+        static char[] white_spaces = new char[3] {' ', '\t', '\n'};
+
+        public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
         {
-            if (!do_we_have_letters)
+            my_parser = new Parser(HTML_code_writer);
+            while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
-                if (sp_before_letters % 4 == 0)
+                ch = (char)WML_code_reader.Read();
+
+                //There are two ways how to "format" text (in lexer or in parser)
+                if (one_l_comment)
                 {
-                    Send_Token(new Token(1, sp_before_letters / 4));
-                    do_we_have_letters = true;
+                    if (ch == '\n')
+                    {
+                        Send_Token(new Token(0));
+                        one_l_comment = false;
+                        sp_before_letters = 0;
+                        do_we_have_letters = false;
+                    }
                 }
-                else
+                else if (indifference[0])
                 {
-                    Console.WriteLine("    Syntax error: wrong indint");
-                    Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
-                    throw new Exception();
+                    indifference_check('}', 0);
                 }
+                else if (indifference[1])
+                {
+                    indifference_check('"', 1);
+                }
+                else if (indifference[2])
+                {
+                    indifference_check('\'', 2);
+                }
+
+                else if (ch == '\r') { }
+                else if (do_we_have_letters)
+                {
+                    work_with_symb();
+                }
+
+                else if (ch == ' ')
+                {
+                    sp_before_letters++;
+                }
+                else if (ch == '\t')
+                {
+                    sp_before_letters += 4;
+                }
+                else if (ch == '\n')
+                {
+                    //Empty lines skipping (we don't have letters)
+                    sp_before_letters = 0;
+                }
+                else // A crutch
+                {
+                    work_with_symb();
+                }
+                last_ch = ch;
             }
+            SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
+            P.S.: eto rabotaet no yavno ne norma
+            */
+            Send_Token(new Token(8));
         }
 
         private void work_with_symb()
@@ -97,7 +145,7 @@ namespace WML
                     one_l_comment = true;
                 }
             }
-            
+
             else if (ch == '=')
             {
                 Quartering();
@@ -142,6 +190,34 @@ namespace WML
             }
         }
 
+        private void SplitWordToken()
+        { // Firstly split (to organize the order of tokens)
+            if (collecting_word)
+            {
+                Send_Token(new Token(4, text));
+                text = "";
+                collecting_word = false;
+            }
+        }
+
+        private void Quartering()
+        {
+            if (!do_we_have_letters)
+            {
+                if (sp_before_letters % 4 == 0)
+                {
+                    Send_Token(new Token(1, sp_before_letters / 4));
+                    do_we_have_letters = true;
+                }
+                else
+                {
+                    Console.WriteLine("    Syntax error: wrong indint");
+                    Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
+                    throw new Exception();
+                }
+            }
+        }
+
         void Send_Token(Token tok)
         {
             bool[] res = my_parser.SendToken(tok);
@@ -150,20 +226,6 @@ namespace WML
                 need_formating_text = !need_formating_text;
             }
         }
-
-        Parser my_parser;
-        char ch;
-        bool do_we_have_letters = false;
-        int sp_before_letters = 0;
-        char last_ch = ' '; // Now i declarated it as space (becouse space would not be used)
-        bool one_l_comment = false;
-        //in_figure_brackets, one_quotation_mark, two_quotation_marks
-        bool[] indifference = new bool[3] { false, false, false };
-        string text = "";  //TODO: Write a code that cleans the 'text' and SENDS TOKENS TO PARSER!!! BOMBIT!!!!
-        bool was_defeated = false;
-        bool collecting_word = false;
-        bool was_attr_splited = false;
-        bool need_formating_text = true;
 
         private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
@@ -258,68 +320,6 @@ namespace WML
                 }       
                 was_defeated = false;
             }
-        }
-
-        public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
-        {
-            my_parser = new Parser(HTML_code_writer);
-            while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
-            {
-                ch = (char)WML_code_reader.Read();
-
-                //There are two ways how to "format" text (in lexer or in parser)
-                if (one_l_comment)
-                {
-                    if (ch == '\n')
-                    {
-                        Send_Token(new Token(0));
-                        one_l_comment = false;
-                        sp_before_letters = 0;
-                        do_we_have_letters = false;
-                    }
-                }
-                else if (indifference[0])
-                {
-                    indifference_check('}', 0);
-                }
-                else if (indifference[1])
-                {
-                    indifference_check('"', 1);
-                }
-                else if (indifference[2])
-                {
-                    indifference_check('\'', 2);
-                }
-
-                else if (ch == '\r') { }
-                else if (do_we_have_letters)
-                {
-                    work_with_symb();
-                }
-
-                else if (ch == ' ')
-                {
-                    sp_before_letters++;
-                }
-                else if (ch == '\t')
-                {
-                    sp_before_letters += 4;
-                }
-                else if (ch == '\n')
-                {
-                    //Empty lines skipping (we don't have letters)
-                    sp_before_letters = 0;
-                }
-                else // A crutch
-                {
-                    work_with_symb();
-                }
-                last_ch = ch;
-            }
-            SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
-            P.S.: eto rabotaet no yavno ne norma
-            */
-            Send_Token(new Token(8));
         }
     }
 
