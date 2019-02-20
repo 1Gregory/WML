@@ -15,6 +15,7 @@ namespace WML
          5 - = (1)
          6 - # (1)
          7 - attr without quotes (3)
+         8 - EOF (1)
              */
 
         public int type;
@@ -309,6 +310,7 @@ namespace WML
             SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
             P.S.: eto rabotaet no yavno ne norma
             */
+            Send_Token(new Token(8));
         }
     }
 
