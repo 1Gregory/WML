@@ -108,9 +108,6 @@ namespace WML
             {
                 text += (char)((int)ch - 32);
                 collecting_word = true;
-            } else if (ch == '\r')
-            {
-
             }
             else
             {
@@ -290,6 +287,7 @@ namespace WML
                     indifference_check('\'', 2);
                 }
 
+                else if (ch == '\r') { }
                 else if (do_we_have_letters)
                 {
                     work_with_symb();
