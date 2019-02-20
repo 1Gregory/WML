@@ -52,71 +52,8 @@ namespace WML
             }
         }
 
-        private void work_with_symb()
+        private void Quartering()
         {
-            if (ch == '\'')
-            {
-                indifference[1] = true;
-                SplitWordToken();
-            }
-            else if (ch == '"')
-            {
-                SplitWordToken();
-                indifference[2] = true;
-            }
-            else if (ch == '/')
-            {
-                if (last_ch == '/')
-                {
-                    one_l_comment = true;
-                }
-                return;
-            }
-            else if (ch == '{')
-            {
-                indifference[0] = true;
-                SplitWordToken();
-            }
-            else if (ch == '=')
-            {
-                SplitWordToken();
-                Send_Token(new Token(5));
-            }
-            else if (ch == '#')
-            {
-                SplitWordToken();
-                Send_Token(new Token(6));
-            }
-            else if (ch == '\n')
-            {
-                do_we_have_letters = false;
-                sp_before_letters = 0;
-                SplitWordToken();
-                Send_Token(new Token(0));
-                return; // Maybe it is a crutch but it should fix the bug
-            }
-            else if (ch == ' ' || ch == '\t')
-            {
-                SplitWordToken();
-            }
-            //part with letters
-            else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
-            {
-                text += ch;
-                collecting_word = true;  //Not a crutch
-            }
-            else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
-            {
-                text += (char)((int)ch - 32);
-                collecting_word = true;
-            }
-            else
-            {
-                Console.WriteLine("    Syntax error: unknown symbol");
-                Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
-                throw new Exception();
-            }
-
             if (!do_we_have_letters)
             {
                 if (sp_before_letters % 4 == 0)
@@ -130,6 +67,75 @@ namespace WML
                     Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
                     throw new Exception();
                 }
+            }
+        }
+
+        private void work_with_symb()
+        {
+            if (ch == '\'')
+            {
+                SplitWordToken();
+                indifference[1] = true;
+            }
+            else if (ch == '"')
+            {
+                SplitWordToken();
+                indifference[2] = true;
+            }
+            else if (ch == '/')
+            {
+                if (last_ch == '/')
+                {
+                    one_l_comment = true;
+                }
+            }
+            else if (ch == '{')
+            {
+                Quartering();
+                SplitWordToken();
+                indifference[0] = true;
+            }
+            else if (ch == '=')
+            {
+                Quartering();
+                SplitWordToken();
+                Send_Token(new Token(5));
+            }
+            else if (ch == '#')
+            {
+                Quartering();
+                SplitWordToken();
+                Send_Token(new Token(6));
+            }
+            else if (ch == '\n')
+            {
+                do_we_have_letters = false;
+                sp_before_letters = 0;
+                SplitWordToken();
+                Send_Token(new Token(0));
+            }
+            else if (ch == ' ' || ch == '\t')
+            {
+                SplitWordToken();
+            }
+            //part with letters
+            else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
+            {
+                Quartering();
+                text += ch;
+                collecting_word = true;  //Not a crutch
+            }
+            else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
+            {
+                Quartering();
+                text += (char)((int)ch - 32);
+                collecting_word = true;
+            }
+            else
+            {
+                Console.WriteLine("    Syntax error: unknown symbol");
+                Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
+                throw new Exception();
             }
         }
 
