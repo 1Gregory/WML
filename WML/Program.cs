@@ -72,15 +72,23 @@ namespace WML
 
         private void work_with_symb()
         {
-            if (ch == '\'')
+            if (ch == '"')
             {
+                Quartering();
                 SplitWordToken();
                 indifference[1] = true;
             }
-            else if (ch == '"')
+            else if (ch == '\'')
             {
+                Quartering();
                 SplitWordToken();
                 indifference[2] = true;
+            }
+            else if (ch == '{')
+            {
+                Quartering();
+                SplitWordToken();
+                indifference[0] = true;
             }
             else if (ch == '/')
             {
@@ -89,12 +97,7 @@ namespace WML
                     one_l_comment = true;
                 }
             }
-            else if (ch == '{')
-            {
-                Quartering();
-                SplitWordToken();
-                indifference[0] = true;
-            }
+            
             else if (ch == '=')
             {
                 Quartering();
