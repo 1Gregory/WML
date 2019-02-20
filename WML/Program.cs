@@ -342,7 +342,7 @@ namespace WML
             }
             else
             {
-                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", " + Convert.ToString(tok.value_2));
+                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + Convert.ToString(tok.value_2));
             }
             return new bool[]{false};
         }
