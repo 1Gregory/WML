@@ -244,6 +244,15 @@ namespace WML
             }
         }
 
+        private void WhiteSpacesCheck(char to_add)
+        {
+            if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
+                        Array.Exists(white_spaces_2, el => el == last_ch)))
+            {
+                text += to_add;
+            }
+        }
+
         private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
         {
             if (ch == '\\')
@@ -334,31 +343,14 @@ namespace WML
                  Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
                  Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
                  Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
-                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch */
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch*/
                 else if (Array.Exists(white_spaces_1, el=> el == ch) && need_formating_text)
                 {
-                    if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
-                        Array.Exists(white_spaces_2, el => el == last_ch)))
-                    {
-                        text += ch;
-                    }
-                    //In other cases do nothing
+                    WhiteSpacesCheck(ch);
                 }
                 else if (Array.Exists(white_spaces_2, el => el == ch) && need_formating_text)
                 {
-                    if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
-                        Array.Exists(white_spaces_2, el => el == last_ch)))
-                    {
-                        text += ' ';
-                    }
+                    WhiteSpacesCheck(' ');
                 }
                 else {
                     text += ch;
