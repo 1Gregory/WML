@@ -54,7 +54,8 @@ namespace WML
         bool was_attr_splited = false;
         bool need_formating_text = true;
 
-        static char[] white_spaces = new char[4] {' ', '\t', '\n', '\r'};
+        static char[] white_spaces_1 = {' ', '\t'};
+        static char[] white_spaces_2 = {'\n', '\r'};
 
         public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
         {
@@ -170,7 +171,7 @@ namespace WML
                 SplitWordToken();
                 Send_Token(new Token(0));
             }
-            else if (ch == ' ' || ch == '\t')
+            else if (Array.Exists(white_spaces_1, el => el == ch))
             {
                 SplitWordToken();
             }
@@ -298,7 +299,6 @@ namespace WML
                         {
                             text += '}';
                         }
-
                     }
                 }
                 else if (ch == '<')
@@ -328,20 +328,36 @@ namespace WML
                         text += "&amp";
                     }
                 }
-                else if (Array.Exists(white_spaces, el => el == ch) && need_formating_text)
+                /*Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch */
+                else if (Array.Exists(white_spaces_1, el=> el == ch) && need_formating_text)
                 {
-                    if (symb == '}') // cruuuutch!!!!!!!!
+                    if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
+                        Array.Exists(white_spaces_2, el => el == last_ch)))
                     {
-                        if (!Array.Exists(white_spaces, el => el == last_ch))
-                        {
-                            text += ch;
-                        }
-                    }
-                    else
-                    {
-                        // I don't know compress attributes or not
-                        was_attr_splited = true;
                         text += ch;
+                    }
+                    //In other cases do nothing
+                }
+                else if (Array.Exists(white_spaces_2, el => el == ch) && need_formating_text)
+                {
+                    if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
+                        Array.Exists(white_spaces_2, el => el == last_ch)))
+                    {
+                        text += ' ';
                     }
                 }
                 else {
@@ -380,7 +396,7 @@ namespace WML
             }
             else
             {
-                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + Convert.ToString(tok.value_2));
+                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
             }
             return new bool[]{false};
         }
