@@ -158,6 +158,7 @@ namespace WML
             }
             else if (ch == '#')
             {
+                // I don't need quatrering and splitwordtoken there but i think yetyo normya
                 Quartering();
                 SplitWordToken();
                 Send_Token(new Token(6));
@@ -176,15 +177,11 @@ namespace WML
             //part with letters
             else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
             {
-                Quartering();
-                text += ch;
-                collecting_word = true;  //Not a crutch
+                EnglishLetters(ch);
             }
             else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
             {
-                Quartering();
-                text += (char)((int)ch - 32);
-                collecting_word = true;
+                EnglishLetters((char)((int)ch - 32));
             }
             else
             {
@@ -202,6 +199,21 @@ namespace WML
                 text = "";
                 collecting_word = false;
             }
+        }
+
+        /*Repeating parts of code*/
+
+        private void EnglishLetters(char text_char)
+        {
+            Quartering();
+            text += text_char;
+            collecting_word = true;
+        }
+
+        private void Quart_and_Split()
+        {
+            Quartering();
+            SplitWordToken();
         }
 
         private void Quartering()
