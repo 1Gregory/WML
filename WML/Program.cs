@@ -294,7 +294,11 @@ namespace WML
                         {
                             text += "&apos";
                         }
-                        text += '}';
+                        else
+                        {
+                            text += '}';
+                        }
+
                     }
                 }
                 else if (ch == '<')
