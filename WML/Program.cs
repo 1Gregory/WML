@@ -68,10 +68,14 @@ namespace WML
                 {
                     if (ch == '\n')
                     {
-                        Send_Token(new Token(0));
+                        if (do_we_have_letters)
+                        {
+                            Send_Token(new Token(0));
+                            do_we_have_letters = false;
+                        }
                         one_l_comment = false;
                         sp_before_letters = 0;
-                        do_we_have_letters = false;
+
                     }
                 }
                 else if (indifference[0])
