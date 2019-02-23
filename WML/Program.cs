@@ -378,6 +378,7 @@ namespace WML
 
         public bool[] SendToken(Token tok)
         {
+            /*
             if (tok.type == 1)
             {
                 Console.WriteLine("type: 1, value: " + Convert.ToString(tok.value));
@@ -390,6 +391,7 @@ namespace WML
             {
                 Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
             }
+            */
             return new bool[]{false};
         }
         // For future development
@@ -401,9 +403,13 @@ namespace WML
         {
 
         }
-        public void SendTokens()
+        public void AppendText(string html_text, int pos)
         {
-
+            /*
+             0 - inside 2
+             1 - inside
+             2 - outside
+             */
         }
     }
 
