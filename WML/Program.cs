@@ -40,6 +40,7 @@ namespace WML
 
     class Tokenizer
     {
+        StreamReader WML_code_reader;
         Parser my_parser;
         char ch;
         bool do_we_have_letters = false;
@@ -59,10 +60,11 @@ namespace WML
 
         public void Lexer(StreamReader WML_code_reader, StreamWriter HTML_code_writer)
         {
+            this.WML_code_reader = WML_code_reader;
             my_parser = new Parser(HTML_code_writer);
-            while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
+            while (!this.WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
             {
-                ch = (char)WML_code_reader.Read();
+                ch = (char)this.WML_code_reader.Read();
 
                 //There are two ways how to "format" text (in lexer or in parser)
                 if (one_l_comment)
@@ -188,6 +190,8 @@ namespace WML
             {
                 Console.WriteLine("    Syntax error: unknown symbol");
                 Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
+                my_parser.my_composer.HTML_code_writer.Close();
+                WML_code_reader.Close();
                 throw new Exception();
             }
         }
@@ -230,6 +234,8 @@ namespace WML
                 {
                     Console.WriteLine("    Syntax error: wrong indint");
                     Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
+                    my_parser.my_composer.HTML_code_writer.Close();
+                    WML_code_reader.Close();
                     throw new Exception();
                 }
             }
