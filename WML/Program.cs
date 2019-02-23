@@ -408,6 +408,10 @@ namespace WML
         public FileStream HTML_code_stream;
         public StreamWriter HTML_code_writer;
 
+        int insideinside_pos = 0;
+        int inside_pos = 0;
+        int after_pos = 0;
+
         public Composer(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
             this.HTML_code_stream = HTML_code_stream;
@@ -416,10 +420,11 @@ namespace WML
         public void AppendText(string html_text, int pos)
         {
             /*
-             0 - inside 2
-             1 - inside
-             2 - outside
-             */
+            0 - inside 2
+            1 - inside
+            2 - outside
+            */
+
         }
     }
 
