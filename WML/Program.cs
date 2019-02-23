@@ -362,7 +362,7 @@ namespace WML
 
     class Parser
     {
-        Composer my_composer;
+        public Composer my_composer;
 
         public Parser(StreamWriter HTML_code_writer)
         {
@@ -399,9 +399,10 @@ namespace WML
 
     class Composer
     {
+        public StreamWriter HTML_code_writer;
         public Composer(StreamWriter HTML_code_writer)
         {
-
+            this.HTML_code_writer = HTML_code_writer;
         }
         public void AppendText(string html_text, int pos)
         {
