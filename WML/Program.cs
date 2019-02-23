@@ -427,6 +427,8 @@ namespace WML
                     StreamWriter HTML_code_writer = new StreamWriter(HTML_code_stream);
                     Tokenizer my_lexer = new Tokenizer();
                     my_lexer.Lexer(WML_code_reader, HTML_code_writer);
+                    WML_code_reader.Close();
+                    HTML_code_writer.Close();
                 }
                 else
                 {
