@@ -375,12 +375,7 @@ namespace WML
             my_composer = new Composer(HTML_code_stream, HTML_code_writer);
         }
 
-        string[] dont_close_them = {"area", "base", "basefont", "bgsound", "br",
-                                                    "col", "command", "embed", "hr", "img",
-                                                    "input", "isindex", "keygen", "link", "meta",
-                                                    "param", "source", "track", "wbr"};
-
-        string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
+        static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
 
         public bool[] SendToken(Token tok)
         {
@@ -403,21 +398,31 @@ namespace WML
         // For future development
     }
 
+    class Level
+    {
+        public int insideinside_pos = 0;
+        public int inside_pos = 0;
+        public int after_pos = 0;
+    }
+
     class Composer
     {
         public FileStream HTML_code_stream;
         public StreamWriter HTML_code_writer;
 
-        int insideinside_pos = 0;
-        int inside_pos = 0;
-        int after_pos = 0;
+        List<Level> level_list = new List<Level>();
+
+        static string[] dont_close_them = {"area", "base", "basefont", "bgsound", "br",
+                                                    "col", "command", "embed", "hr", "img",
+                                                    "input", "isindex", "keygen", "link", "meta",
+                                                    "param", "source", "track", "wbr"};
 
         public Composer(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
             this.HTML_code_stream = HTML_code_stream;
             this.HTML_code_writer = HTML_code_writer;
         }
-        public void AppendText(string html_text, int pos)
+        public void AppendText(string html_text, int level, int pos)
         {
             /*
             0 - inside 2
