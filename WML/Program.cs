@@ -377,7 +377,7 @@ namespace WML
         public Composer my_composer;
 
         bool in_header = false;
-
+        int last_tk_type;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
@@ -443,6 +443,7 @@ namespace WML
                 Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
             }
             */
+            last_tk_type = tok.type;
             return new bool[]{false};
         }
         // For future development
