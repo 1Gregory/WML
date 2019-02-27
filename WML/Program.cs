@@ -16,6 +16,7 @@ namespace WML
          6 - # (1)
          7 - attr without quotes (3)
          8 - EOF (1)
+         9 - - ))))000(1)
              */
 
         public int type;
@@ -153,6 +154,11 @@ namespace WML
                 }
             }
 
+            else if (ch == '-')
+            {
+                SplitWordToken();
+                Send_Token(new Token(9));
+            }
             else if (ch == '=')
             {
                 Quartering();
