@@ -378,6 +378,7 @@ namespace WML
 
         bool in_header = false;
 
+
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
             my_composer = new Composer(HTML_code_stream, HTML_code_writer);
@@ -393,7 +394,7 @@ namespace WML
             }
             else if (tok.type == 1)
             {
-
+                in_header = false;
             }
             else if (tok.type == 2)
             {
@@ -413,7 +414,7 @@ namespace WML
             }
             else if (tok.type == 6)
             {
-
+                in_header = true;
             }
             else if (tok.type == 7)
             {
