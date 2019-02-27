@@ -376,6 +376,8 @@ namespace WML
     {
         public Composer my_composer;
 
+        bool in_header = false;
+
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
             my_composer = new Composer(HTML_code_stream, HTML_code_writer);
@@ -385,6 +387,47 @@ namespace WML
 
         public bool[] SendToken(Token tok)
         {
+            if (tok.type == 0)
+            {
+
+            }
+            else if (tok.type == 1)
+            {
+
+            }
+            else if (tok.type == 2)
+            {
+
+            }
+            else if (tok.type == 3)
+            {
+
+            }
+            else if (tok.type == 4)
+            {
+
+            }
+            else if (tok.type == 5)
+            {
+
+            }
+            else if (tok.type == 6)
+            {
+
+            }
+            else if (tok.type == 7)
+            {
+
+            }
+            else if (tok.type == 8)
+            {
+
+            }
+            else // Tok.type == 9
+            {
+
+            }
+
             /*
             if (tok.type == 1)
             {
