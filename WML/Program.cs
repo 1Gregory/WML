@@ -378,6 +378,7 @@ namespace WML
 
         bool in_header = false;
         int last_tk_type;
+        int this_indent = 0;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
@@ -385,6 +386,11 @@ namespace WML
         }
 
         static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
+
+        /*
+         How to distinguish attribute from tag?
+
+             */
 
         public bool[] SendToken(Token tok)
         {
@@ -410,7 +416,7 @@ namespace WML
             }
             else if (tok.type == 5)
             {
-
+                return new bool[1]{false}; // to distinguish attribute from tag
             }
             else if (tok.type == 6)
             {
@@ -429,6 +435,10 @@ namespace WML
 
             }
 
+            if (last_tk_type == )
+
+            last_tk_type = tok.type;
+            return new bool[]{false};
             /*
             if (tok.type == 1)
             {
@@ -443,10 +453,7 @@ namespace WML
                 Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
             }
             */
-            last_tk_type = tok.type;
-            return new bool[]{false};
         }
-        // For future development
     }
 
     class Level
