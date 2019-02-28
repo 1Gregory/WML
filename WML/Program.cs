@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace WML
 {
-    enum tk_types
+    enum tk_types : int
     {
-        new_line = 0,
+        new_line,
         indent,
         attr,
         text,
@@ -449,7 +449,7 @@ namespace WML
 
             }*/
 
-            if (last_tk_type == 4)
+            if (last_tk_type == (int)tk_types.word)
             {
 
             }
