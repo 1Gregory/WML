@@ -4,6 +4,20 @@ using System.Collections.Generic;
 
 namespace WML
 {
+    enum tk_types
+    {
+        new_line = 0,
+        indent,
+        attr,
+        text,
+        word,
+        equality,
+        hashtag,
+        attr_without_quotes,
+        eof,
+        tere
+    }
+
     public class Token
     {
         /*
@@ -394,7 +408,7 @@ namespace WML
 
         public bool[] SendToken(Token tok)
         {
-            if (tok.type == 0)
+            /*if (tok.type == 0)
             {
 
             }
@@ -433,9 +447,12 @@ namespace WML
             else // Tok.type == 9
             {
 
-            }
+            }*/
 
-            if (last_tk_type == )
+            if (last_tk_type == 4)
+            {
+
+            }
 
             last_tk_type = tok.type;
             return new bool[]{false};
