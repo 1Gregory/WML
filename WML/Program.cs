@@ -393,6 +393,8 @@ namespace WML
         bool in_header = false;
         int last_tk_type;
         int this_indent = 0;
+        bool in_attr = false;
+        private int LastVerifiedIndent;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
@@ -451,7 +453,10 @@ namespace WML
 
             if (last_tk_type == (int)tk_types.word)
             {
-
+                if (tok.type == (int)tk_types.equality)
+                {
+                    in_attr = true;
+                }
             }
 
             last_tk_type = tok.type;
