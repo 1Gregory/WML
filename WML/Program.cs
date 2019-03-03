@@ -396,6 +396,7 @@ namespace WML
         bool in_attr = false;
         private int LastVerifiedIndent;
         private bool started_from_attr = false;
+        bool had_we_tk_after_indent = false;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
@@ -403,11 +404,6 @@ namespace WML
         }
 
         static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
-
-        /*
-         How to distinguish attribute from tag?
-
-             */
 
         public bool[] SendToken(Token tok)
         {
@@ -451,6 +447,13 @@ namespace WML
             {
 
             }*/
+            if (tok.type == (int)tk_types.new_line || tok.type == (int)tk_types.eof)
+            {
+                had_we_tk_after_indent = false;
+                started_from_attr = false;
+                in_header = false;
+            }
+
             if (tok.type == (int)tk_types.hashtag)
             {
                 in_header = true;
