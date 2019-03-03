@@ -395,6 +395,7 @@ namespace WML
         int this_indent = 0;
         bool in_attr = false;
         private int LastVerifiedIndent;
+        private bool started_from_attr = false;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
@@ -450,6 +451,11 @@ namespace WML
             {
 
             }*/
+            if (tok.type == (int)tk_types.hashtag)
+            {
+                in_header = true;
+                return new bool[] { false };
+            }
 
             if (last_tk_type == (int)tk_types.word)
             {
