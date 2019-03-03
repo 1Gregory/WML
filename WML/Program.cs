@@ -454,7 +454,7 @@ namespace WML
                 in_header = false;
             }
 
-            if (tok.type == (int)tk_types.hashtag)
+            else if (tok.type == (int)tk_types.hashtag)
             {
                 in_header = true;
                 return new bool[] { false };
