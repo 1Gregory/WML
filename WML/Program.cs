@@ -447,6 +447,29 @@ namespace WML
             {
 
             }*/    
+            if (in_header)
+            {
+                if (tok.type == (int)tk_types.new_line)
+                {
+                    in_header = false;
+                }
+                else if (tok.type == (int)tk_types.word)
+                {
+
+                }
+                else if (tok.type == (int)tk_types.tere) { } //Just for splitting
+                else
+                {
+                    Console.WriteLine("    Syntax error: strange token in the header");
+                    Console.WriteLine("    Indent: " + Convert.ToString(tok.type));
+                    throw new Exception();
+                }
+            }
+            else
+            {
+
+            }
+            /*
             if (tok.type == (int)tk_types.new_line || tok.type == (int)tk_types.eof)
             {
                 had_we_tk_after_indent = false;
@@ -466,7 +489,7 @@ namespace WML
                 {
                     in_attr = true;
                 }
-            }
+            }*/
 
             last_tk_type = tok.type;
             return new bool[]{false};
