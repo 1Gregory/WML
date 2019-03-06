@@ -446,7 +446,7 @@ namespace WML
             else // Tok.type == 9
             {
 
-            }*/
+            }*/    
             if (tok.type == (int)tk_types.new_line || tok.type == (int)tk_types.eof)
             {
                 had_we_tk_after_indent = false;
@@ -511,7 +511,7 @@ namespace WML
             this.HTML_code_stream = HTML_code_stream;
             this.HTML_code_writer = HTML_code_writer;
         }
-        public void AppendText(string html_text, int level, int pos)
+        public void AppendText(string html_text, int level, int pos, bool is_text)
         {
             /*
             0 - inside 2
