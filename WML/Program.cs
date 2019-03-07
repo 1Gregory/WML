@@ -468,9 +468,16 @@ namespace WML
             }
             else
             {
-                if (tok.type == (int)tk_types.indent)
+                if (last_tk_type == (int)tk_types.word)
                 {
+                    if (tok.type == (int)tk_types.equality)
+                    {
 
+                    }
+                    else
+                    {
+
+                    }               
                 }
             }
             /*
