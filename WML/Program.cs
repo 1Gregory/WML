@@ -397,6 +397,7 @@ namespace WML
         private int LastVerifiedIndent;
         private bool started_from_attr = false;
         bool had_we_tk_after_indent = false;
+        bool the_first_was_word = false;
 
         public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
         {
