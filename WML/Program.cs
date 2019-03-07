@@ -461,7 +461,7 @@ namespace WML
                 else
                 {
                     Console.WriteLine("    Syntax error: strange token in the header");
-                    Console.WriteLine("    Indent: " + Convert.ToString(tok.type));
+                    Console.WriteLine("    Token: " + Convert.ToString(tok.type));
                     throw new Exception();
                 }
             }
