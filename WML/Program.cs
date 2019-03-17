@@ -52,6 +52,13 @@ namespace WML
             this.value_2 = value;
         }
     }
+    
+    class Level
+    {
+        public int insideinside_pos = 0;
+        public int inside_pos = 0;
+        public int after_pos = 0;
+    }
 
     class Tokenizer
     {
@@ -525,13 +532,6 @@ namespace WML
         }
     }
 
-    class Level
-    {
-        public int insideinside_pos = 0;
-        public int inside_pos = 0;
-        public int after_pos = 0;
-    }
-
     class Composer
     {
         public FileStream HTML_code_stream;
@@ -562,7 +562,47 @@ namespace WML
 
     class Program
     {
-        static void Main(string[] argvs)
+        //From lexer
+        Parser my_parser;
+        char ch;
+        bool do_we_have_letters = false;
+        int sp_before_letters = 0;
+        char last_ch;
+        bool one_l_comment = false;
+        //in_figure_brackets, one_quotation_mark, two_quotation_marks
+        bool[] indifference = new bool[3] { false, false, false };
+        string text = "";
+        bool was_defeated = false;
+        bool collecting_word = false;
+        bool was_attr_splited = false;
+        bool need_formating_text = true;
+
+        static char[] white_spaces_1 = {' ', '\t'};
+        static char[] white_spaces_2 = {'\n', '\r'};
+        
+        
+        
+        
+        //From parser
+        static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
+        
+        
+        
+        //From composer
+        public FileStream HTML_code_stream;
+        public StreamWriter HTML_code_writer;
+
+        List<Level> level_list = new List<Level>();
+
+        static string[] dont_close_them = {"area", "base", "basefont", "bgsound", "br",
+            "col", "command", "embed", "hr", "img",
+            "input", "isindex", "keygen", "link", "meta",
+            "param", "source", "track", "wbr"};
+        
+        
+        
+        
+        void Main(string[] argvs)
         {
             if (argvs.Length == 2)
             {
@@ -573,7 +613,71 @@ namespace WML
                     FileStream HTML_code_stream = new FileStream(argvs[1], FileMode.OpenOrCreate);
                     StreamWriter HTML_code_writer = new StreamWriter(HTML_code_stream);
                     Tokenizer my_lexer = new Tokenizer();
-                    my_lexer.Lexer(WML_code_reader, HTML_code_stream, HTML_code_writer);
+                    
+                    my_parser = new Parser(HTML_code_stream, HTML_code_writer);
+                    while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
+                    {
+                        ch = (char)WML_code_reader.Read();
+        
+                        //There are two ways how to "format" text (in lexer or in parser)
+                        if (one_l_comment)
+                        {
+                            if (ch == '\n')
+                            {
+                                if (do_we_have_letters)
+                                {
+                                    Send_Token(new Token(0));
+                                    do_we_have_letters = false;
+                                }
+                                one_l_comment = false;
+                                sp_before_letters = 0;
+        
+                            }
+                        }
+                        else if (indifference[0])
+                        {
+                            indifference_check('}', 0);
+                        }
+                        else if (indifference[1])
+                        {
+                            indifference_check('"', 1);
+                        }
+                        else if (indifference[2])
+                        {
+                            indifference_check('\'', 2);
+                        }
+        
+                        else if (ch == '\r') { }
+                        else if (do_we_have_letters)
+                        {
+                            work_with_symb();
+                        }
+        
+                        else if (ch == ' ')
+                        {
+                            sp_before_letters++;
+                        }
+                        else if (ch == '\t')
+                        {
+                            sp_before_letters += 4;
+                        }
+                        else if (ch == '\n')
+                        {
+                            //Empty lines skipping (we don't have letters)
+                            sp_before_letters = 0;
+                        }
+                        else // A crutch
+                        {
+                            work_with_symb();
+                        }
+                        last_ch = ch;
+                    }
+                    SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
+                    P.S.: eto rabotaet no yavno ne norma
+                    */
+                    Send_Token(new Token(8));
+                    
+                    //my_lexer.Lexer(WML_code_reader, HTML_code_stream, HTML_code_writer);
                     //WML_code_reader.Close();
                     //HTML_code_writer.Close();
                 }
@@ -587,5 +691,7 @@ namespace WML
                 Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>");
             }
         }
+        
+        
     }
 }
