@@ -560,6 +560,11 @@ namespace WML
         }
     }
 
+    
+    
+    
+    
+    
     class Program
     {
         //From lexer
@@ -580,11 +585,322 @@ namespace WML
         static char[] white_spaces_1 = {' ', '\t'};
         static char[] white_spaces_2 = {'\n', '\r'};
         
+        private void work_with_symb()
+        {
+            if (ch == '"')
+            {
+                Quartering();
+                SplitWordToken();
+                indifference[1] = true;
+            }
+            else if (ch == '\'')
+            {
+                Quartering();
+                SplitWordToken();
+                indifference[2] = true;
+            }
+            else if (ch == '{')
+            {
+                Quartering();
+                SplitWordToken();
+                indifference[0] = true;
+            }
+            else if (ch == '/')
+            {
+                if (last_ch == '/')
+                {
+                    one_l_comment = true;
+                }
+            }
+
+            else if (ch == '-')
+            {
+                SplitWordToken();
+                Send_Token(new Token(9));
+            }
+            else if (ch == '=')
+            {
+                Quartering();
+                SplitWordToken();
+                Send_Token(new Token(5));
+            }
+            else if (ch == '#')
+            {
+                // I don't need quatrering and splitwordtoken there but i think yetyo normya
+                Quartering();
+                SplitWordToken();
+                Send_Token(new Token(6));
+            }
+            else if (ch == '\n')
+            {
+                do_we_have_letters = false;
+                sp_before_letters = 0;
+                SplitWordToken();
+                Send_Token(new Token(0));
+            }
+            else if (Array.Exists(white_spaces_1, el => el == ch))
+            {
+                SplitWordToken();
+            }
+            //part with letters
+            else if ((int)ch >= 97 && (int)ch <= 122) // 97[a] <= (int)ch <= 122[z]
+            {
+                EnglishLetters(ch);
+            }
+            else if ((int)ch >= 65 && (int)ch <= 90) // 65[A] <= (int)ch <= 90[Z] {-32}
+            {
+                EnglishLetters((char)((int)ch - 32));
+            }
+            else
+            {
+                Console.WriteLine("    Syntax error: unknown symbol");
+                Console.WriteLine("    Symbol code: " + Convert.ToString((int)ch));
+                //my_parser.my_composer.HTML_code_writer.Close();
+                //WML_code_reader.Close();
+                throw new Exception();
+            }
+        }
+
+        private void SplitWordToken()
+        { // Firstly split (to organize the order of tokens)
+            if (collecting_word)
+            {
+                Send_Token(new Token(4, text));
+                text = "";
+                collecting_word = false;
+            }
+        }
+
+        /*Repeating parts of code*/
+
+        private void EnglishLetters(char text_char)
+        {
+            Quartering();
+            text += text_char;
+            collecting_word = true;
+        }
+
+        private void Quart_and_Split()
+        {
+            Quartering();
+            SplitWordToken();
+        }
+
+        private void Quartering()
+        {
+            if (!do_we_have_letters)
+            {
+                if (sp_before_letters % 4 == 0)
+                {
+                    Send_Token(new Token(1, sp_before_letters / 4));
+                    do_we_have_letters = true;
+                }
+                else
+                {
+                    Console.WriteLine("    Syntax error: wrong indint");
+                    Console.WriteLine("    Indent: " + Convert.ToString(sp_before_letters));
+                    //my_parser.my_composer.HTML_code_writer.Close();
+                    //WML_code_reader.Close();
+                    throw new Exception();
+                }
+            }
+        }
+
+        void Send_Token(Token tok)
+        {
+            bool[] res = my_parser.SendToken(tok);
+            if (res[0])
+            {
+                need_formating_text = !need_formating_text;
+            }
+        }
+
+        private void WhiteSpacesCheck(char to_add)
+        {
+            if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
+                        Array.Exists(white_spaces_2, el => el == last_ch)))
+            {
+                text += to_add;
+            }
+        }
+
+        private void indifference_check(char symb, int state) // In future, i will create a small array of 'symbs'
+        {
+            if (ch == '\\')
+            {
+                if (was_defeated) // Not a crutch!!!
+                {
+                    // It means that last char was a back slash
+                    was_defeated = false;
+                }
+                else if (last_ch == '\\')
+                {
+                    // was_defeated = false
+                    text += '\\';
+                    was_defeated = true;
+                }
+                // In other cases do nothing
+            }
+            else
+            {
+                if (ch == symb)
+                {
+                    if (last_ch != '\\' || was_defeated) // Maybe it is a crutch (becouse half of variants are irregular), but i don't know a solution
+                    {
+                        // Exit from indifferene is just there
+                        indifference[state] = false;
+                        if (ch == '}')
+                        {
+                            Send_Token(new Token(3, text));
+                        }
+                        else if (was_attr_splited)
+                        {
+                            Send_Token(new Token(7, text));
+                            was_attr_splited = false;
+                        }
+                        else
+                        {
+                            Send_Token(new Token(2, text));
+                        }
+                        text = "";
+                    }
+                    else
+                    {
+                        // Maybe it is not a good soluton but
+                        if (symb == '"')
+                        {
+                            text += "&quot";
+                        }
+                        else if (symb == '\'')
+                        {
+                            text += "&apos";
+                        }
+                        else
+                        {
+                            text += '}';
+                        }
+                    }
+                }
+                else if (ch == '<')
+                {
+                    text += "&lt";
+                }
+                else if(ch == '>')
+                {
+                    text += "&gt";
+                }
+                else if (ch == '"')
+                {
+                    text += "&quot";
+                }
+                else if (ch == '\'')
+                {
+                    text += "&apos";
+                }
+                else if (ch == '&')
+                {
+                    if (last_ch == '\\' && !was_defeated)
+                    {
+                        text += '&';
+                    }
+                    else
+                    {
+                        text += "&amp";
+                    }
+                }
+                /*Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch 
+                 Crutch Crutch Crutch Crutch Crutch Crutch Crutch Crutch*/
+                else if (Array.Exists(white_spaces_1, el=> el == ch) && need_formating_text)
+                {
+                    WhiteSpacesCheck(ch);
+                }
+                else if (Array.Exists(white_spaces_2, el => el == ch) && need_formating_text)
+                {
+                    WhiteSpacesCheck(' ');
+                }
+                else {
+                    text += ch;
+                }       
+                was_defeated = false;
+            }
+        }
         
         
         
         //From parser
+        bool in_header = false;
+        int last_tk_type;
+        int this_indent = 0;
+        bool in_attr = false;
+        private int LastVerifiedIndent;
+        private bool started_from_attr = false;
+        bool had_we_tk_after_indent = false;
+        bool the_first_was_word = false;
+        
         static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
+        
+        public bool[] SendToken(Token tok)
+        {
+            /*if (in_header)
+            {
+                if (tok.type == (int)tk_types.new_line)
+                {
+                    in_header = false;
+                }
+                else if (tok.type == (int)tk_types.word)
+                {
+
+                }
+                else if (tok.type == (int)tk_types.tere) { } //Just for splitting
+                else
+                {
+                    Console.WriteLine("    Syntax error: strange token in the header");
+                    Console.WriteLine("    Token: " + Convert.ToString(tok.type));
+                    throw new Exception();
+                }
+            }
+            else
+            {
+                if (last_tk_type == (int)tk_types.word)
+                {
+                    if (tok.type == (int)tk_types.equality)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }               
+                }
+                else if (tok.type == (int)tk_types.indent)
+                {
+                    this_indent = tok.value;
+                }
+            }
+
+            last_tk_type = tok.type;
+            */
+            return new bool[]{false};
+            /*
+            if (tok.type == 1)
+            {
+                Console.WriteLine("type: 1, value: " + Convert.ToString(tok.value));
+            }
+            else if (tok.type == 0 || tok.type == 5 || tok.type == 6 || tok.type == 8)
+            {
+                Console.WriteLine("type: " + Convert.ToString(tok.type));
+            }
+            else
+            {
+                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
+            }
+            */
+        }
         
         
         
