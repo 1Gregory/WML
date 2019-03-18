@@ -706,15 +706,6 @@ namespace WML
             }
         }
 
-        void Send_Token(Token tok)
-        {
-            bool[] res = my_parser.SendToken(tok);
-            if (res[0])
-            {
-                need_formating_text = !need_formating_text;
-            }
-        }
-
         private void WhiteSpacesCheck(char to_add)
         {
             if (!(Array.Exists(white_spaces_1, el => el == last_ch) ||
@@ -844,7 +835,7 @@ namespace WML
         
         static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
         
-        public bool[] SendToken(Token tok)
+        public void Send_Token(Token tok)
         {
             /*if (in_header)
             {
@@ -883,9 +874,10 @@ namespace WML
                 }
             }
 
+
             last_tk_type = tok.type;
             */
-            return new bool[]{false};
+            
             /*
             if (tok.type == 1)
             {
@@ -928,7 +920,6 @@ namespace WML
                     StreamReader WML_code_reader = new StreamReader(WML_code_stream);
                     FileStream HTML_code_stream = new FileStream(argvs[1], FileMode.OpenOrCreate);
                     StreamWriter HTML_code_writer = new StreamWriter(HTML_code_stream);
-                    Tokenizer my_lexer = new Tokenizer();
                     
                     my_parser = new Parser(HTML_code_stream, HTML_code_writer);
                     while (!WML_code_reader.EndOfStream) // WML_code_reader.Read() == -1
