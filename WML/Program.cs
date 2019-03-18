@@ -59,178 +59,6 @@ namespace WML
         public int inside_pos = 0;
         public int after_pos = 0;
     }
-
-    class Parser
-    {
-        public Composer my_composer;
-
-        bool in_header = false;
-        int last_tk_type;
-        int this_indent = 0;
-        bool in_attr = false;
-        private int LastVerifiedIndent;
-        private bool started_from_attr = false;
-        bool had_we_tk_after_indent = false;
-        bool the_first_was_word = false;
-
-        public Parser(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
-        {
-            my_composer = new Composer(HTML_code_stream, HTML_code_writer);
-        }
-
-        static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
-
-        public bool[] SendToken(Token tok)
-        {
-            /*if (tok.type == 0)
-            {
-
-            }
-            else if (tok.type == 1)
-            {
-                in_header = false;
-            }
-            else if (tok.type == 2)
-            {
-
-            }
-            else if (tok.type == 3)
-            {
-
-            }
-            else if (tok.type == 4)
-            {
-
-            }
-            else if (tok.type == 5)
-            {
-                return new bool[1]{false}; // to distinguish attribute from tag
-            }
-            else if (tok.type == 6)
-            {
-                in_header = true;
-            }
-            else if (tok.type == 7)
-            {
-
-            }
-            else if (tok.type == 8)
-            {
-
-            }
-            else // Tok.type == 9
-            {
-
-            }*/    
-            if (in_header)
-            {
-                if (tok.type == (int)tk_types.new_line)
-                {
-                    in_header = false;
-                }
-                else if (tok.type == (int)tk_types.word)
-                {
-
-                }
-                else if (tok.type == (int)tk_types.tere) { } //Just for splitting
-                else
-                {
-                    Console.WriteLine("    Syntax error: strange token in the header");
-                    Console.WriteLine("    Token: " + Convert.ToString(tok.type));
-                    throw new Exception();
-                }
-            }
-            else
-            {
-                if (last_tk_type == (int)tk_types.word)
-                {
-                    if (tok.type == (int)tk_types.equality)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }               
-                }
-                else if (tok.type == (int)tk_types.indent)
-                {
-                    this_indent = tok.value;
-                }
-            }
-            /*
-            if (tok.type == (int)tk_types.new_line || tok.type == (int)tk_types.eof)
-            {
-                had_we_tk_after_indent = false;
-                started_from_attr = false;
-                in_header = false;
-            }
-
-            else if (tok.type == (int)tk_types.hashtag)
-            {
-                in_header = true;
-                return new bool[] { false };
-            }
-
-            if (last_tk_type == (int)tk_types.word)
-            {
-                if (tok.type == (int)tk_types.equality)
-                {
-                    in_attr = true;
-                }
-            }*/
-
-            last_tk_type = tok.type;
-            return new bool[]{false};
-            /*
-            if (tok.type == 1)
-            {
-                Console.WriteLine("type: 1, value: " + Convert.ToString(tok.value));
-            }
-            else if (tok.type == 0 || tok.type == 5 || tok.type == 6 || tok.type == 8)
-            {
-                Console.WriteLine("type: " + Convert.ToString(tok.type));
-            }
-            else
-            {
-                Console.WriteLine("type: " + Convert.ToString(tok.type) + ", value: " + tok.value_2);
-            }
-            */
-        }
-    }
-
-    class Composer
-    {
-        public FileStream HTML_code_stream;
-        public StreamWriter HTML_code_writer;
-
-        List<Level> level_list = new List<Level>();
-
-        static string[] dont_close_them = {"area", "base", "basefont", "bgsound", "br",
-                                                    "col", "command", "embed", "hr", "img",
-                                                    "input", "isindex", "keygen", "link", "meta",
-                                                    "param", "source", "track", "wbr"};
-
-        public Composer(FileStream HTML_code_stream, StreamWriter HTML_code_writer)
-        {
-            this.HTML_code_stream = HTML_code_stream;
-            this.HTML_code_writer = HTML_code_writer;
-        }
-        public void AppendText(string html_text, int level, int pos, bool is_text)
-        {
-            /*
-            0 - inside 2
-            1 - inside
-            2 - outside
-            */
-
-        }
-    }
-
-    
-    
-    
-    
     
     class Program
     {
@@ -244,7 +72,6 @@ namespace WML
         
         
         //From lexer
-        //Parser my_parser;
         char ch;
         bool do_we_have_letters = false;
         int sp_before_letters = 0;
@@ -292,27 +119,27 @@ namespace WML
             else if (ch == '-')
             {
                 SplitWordToken();
-                Send_Token(new Token(9));
+                SendToken(new Token(9));
             }
             else if (ch == '=')
             {
                 Quartering();
                 SplitWordToken();
-                Send_Token(new Token(5));
+                SendToken(new Token(5));
             }
             else if (ch == '#')
             {
                 // I don't need quatrering and splitwordtoken there but i think yetyo normya
                 Quartering();
                 SplitWordToken();
-                Send_Token(new Token(6));
+                SendToken(new Token(6));
             }
             else if (ch == '\n')
             {
                 do_we_have_letters = false;
                 sp_before_letters = 0;
                 SplitWordToken();
-                Send_Token(new Token(0));
+                SendToken(new Token(0));
             }
             else if (Array.Exists(white_spaces_1, el => el == ch))
             {
@@ -341,7 +168,7 @@ namespace WML
         { // Firstly split (to organize the order of tokens)
             if (collecting_word)
             {
-                Send_Token(new Token(4, text));
+                SendToken(new Token(4, text));
                 text = "";
                 collecting_word = false;
             }
@@ -368,7 +195,7 @@ namespace WML
             {
                 if (sp_before_letters % 4 == 0)
                 {
-                    Send_Token(new Token(1, sp_before_letters / 4));
+                    SendToken(new Token(1, sp_before_letters / 4));
                     do_we_have_letters = true;
                 }
                 else
@@ -418,16 +245,16 @@ namespace WML
                         indifference[state] = false;
                         if (ch == '}')
                         {
-                            Send_Token(new Token(3, text));
+                            SendToken(new Token(3, text));
                         }
                         else if (was_attr_splited)
                         {
-                            Send_Token(new Token(7, text));
+                            SendToken(new Token(7, text));
                             was_attr_splited = false;
                         }
                         else
                         {
-                            Send_Token(new Token(2, text));
+                            SendToken(new Token(2, text));
                         }
                         text = "";
                     }
@@ -511,7 +338,7 @@ namespace WML
         
         static string[] dont_format = {"pre", "code", "style", "script"}; // I think, it is normal to add last two
         
-        public void Send_Token(Token tok)
+        public void SendToken(Token tok)
         {
             /*if (in_header)
             {
@@ -580,6 +407,16 @@ namespace WML
             "input", "isindex", "keygen", "link", "meta",
             "param", "source", "track", "wbr"};
         
+        public void AppendText(string html_text, int level, int pos, bool is_text)
+        {
+            /*
+            0 - inside 2
+            1 - inside
+            2 - outside
+            */
+
+        }
+        
         
         
         
@@ -606,7 +443,7 @@ namespace WML
                             {
                                 if (do_we_have_letters)
                                 {
-                                    Send_Token(new Token(0));
+                                    SendToken(new Token(0));
                                     do_we_have_letters = false;
                                 }
                                 one_l_comment = false;
@@ -655,7 +492,7 @@ namespace WML
                     SplitWordToken(); /* eto norma (no ne fact chto rabotaet(()
                     P.S.: eto rabotaet no yavno ne norma
                     */
-                    Send_Token(new Token(8));
+                    SendToken(new Token(8));
                     
                     //my_lexer.Lexer(WML_code_reader, HTML_code_stream, HTML_code_writer);
                     //WML_code_reader.Close();
@@ -671,7 +508,5 @@ namespace WML
                 Console.WriteLine("    Usage:\n\n    WML <.wml> <.html>");
             }
         }
-        
-        
     }
 }
